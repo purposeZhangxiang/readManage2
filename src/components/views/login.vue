@@ -67,13 +67,13 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$router.push("/home");
+          // this.$router.push("/home");
 
-          // login("/manager/login", "post", this.formObj).then(res => {
-          //   sessionStorage.setItem("token", res.token);
-          //   this.$router.push("/home");
-          //   // this.$store.dispatch("login");
-          // });
+          login("/manager/login", "post", this.formObj).then(res => {
+            sessionStorage.setItem("token", res.token);
+            this.$router.push("/home");
+            // this.$store.dispatch("login");
+          });
         } else {
           return false;
         }
@@ -94,9 +94,6 @@ export default {
   background-size: 100% 100%;
   overflow: hidden;
   position: relative;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   .form1 {
     width: 400px;
     position: absolute;

@@ -51,7 +51,7 @@ const sendRequest = (apiName, method="get", data={}, responseType = "json") => {
         responseType: responseType
     }
     //token验证部分
-    /* if (sessionStorage.getItem('token')) {
+    if (sessionStorage.getItem('token')) {
         config.headers.accessToken = sessionStorage.getItem('token')
     } else {
         //判断当前是否在登录页
@@ -63,7 +63,7 @@ const sendRequest = (apiName, method="get", data={}, responseType = "json") => {
             router.push({ path: '/login' });
             return;
         }
-    } */
+    } 
     //关于data的处理,如果后台按照序列化的标准接受就采用qs模块去处理post请求参数
     if (!data) {
         delete config.params;
