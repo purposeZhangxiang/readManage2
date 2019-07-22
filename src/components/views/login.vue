@@ -61,19 +61,17 @@ export default {
   created() {},
   methods: {
     /**
-     * @method submitForm 登录方法
-     * @method resetForm 重置input框
+     * @method {submitForm} 登录方法
+     * @method {resetForm} 重置input框
      */
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // this.$router.push("/home");
-
-          login("/manager/login", "post", this.formObj).then(res => {
-            sessionStorage.setItem("token", res.token);
-            this.$router.push("/home");
-            // this.$store.dispatch("login");
-          });
+           this.$store.dispatch("login",this.formObj);
+          // login("/manager/login", "post", this.formObj).then(res => {
+          //   sessionStorage.setItem("token", res.token);
+          //   this.$router.push("/home");
+          // });
         } else {
           return false;
         }
@@ -98,7 +96,6 @@ export default {
     width: 400px;
     position: absolute;
     top: calc(50% - 123px);
-    // transform: translateY(-130px);
     left:calc(50% - 200px);
   }
   .title {
