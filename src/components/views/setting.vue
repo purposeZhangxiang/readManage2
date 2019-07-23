@@ -1,6 +1,6 @@
 <template>
   <div>
-    <breadNav :nowLocation="text"/>
+    <breadNav :nowLocation="text" />
     <div class="userInfo">
       <el-form
         :model="ruleForm2"
@@ -13,7 +13,10 @@
         <el-form-item label="当前账户">
           <el-input type="text" v-model="ruleForm2.user" autocomplete="off" readonly="readonly"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="pass">
+        <el-form-item label="原密码" prop="oldPass">
+          <el-input type="password" v-model="ruleForm2.oldPass" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="pass">
           <el-input type="password" v-model="ruleForm2.pass" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
@@ -30,7 +33,7 @@
 </template>
 
 <script>
-import {http} from '../../api/http.js'
+import { http } from "../../api/http.js";
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
@@ -56,6 +59,7 @@ export default {
       text: ["设置"],
       ruleForm2: {
         user: "admin",
+        oldPass: "",
         pass: "",
         checkPass: ""
       },
@@ -72,10 +76,10 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let data={password:this.ruleForm2.checkPass};
-          http("/changePassword","post",data).then(res=>{
-            debugger
-          })
+          let data = { oldPass: this.ruleForm2.oldPass,newPass:this.ruleForm2.checkPass };
+          http("/manager/updatePassWord", "post", data).then(res => {
+            this.$message.success("修改成功")
+          });
         } else {
           return false;
         }

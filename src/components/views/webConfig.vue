@@ -18,7 +18,7 @@
       :highlight-current-row="true"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="url" label="urlPath" min-width="100" width="150" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="url" label="urlPath" min-width="100" width="250" show-overflow-tooltip></el-table-column>
       <el-table-column prop="status" label="状态" min-width="100" width="150"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -131,19 +131,29 @@ export default {
       this.webDialogTitle = "编辑url";
       Object.assign(this.webform, row);
       console.log(row);
-      
     },
-    handleDelete() {},
+    handleDelete(index, row) {
+      this.$confirm("确认删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        http("/url/delete", "post", { id: row.id }).then(res => {
+          this.$message.success("删除成功");
+          this.getWebConfig();
+        });
+      });
+    },
     webSure() {
       if (this.webDialogTitle === "新增url") {
         http("/url/add", "post", this.webform).then(res => {
           this.webDialog = false;
-          this.$message.success("新增url成功");
+          this.$message.success("新增成功");
           this.getWebConfig(); //刷新
         });
       } else if (this.webDialogTitle === "编辑url") {
-        debugger
-        console.log(webform)
+        debugger;
+        console.log(webform);
         http("/url/update", "post", this.webform).then(res => {
           this.webDialog = false;
           this.$message.success("修改url成功");
