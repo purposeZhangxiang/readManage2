@@ -23,7 +23,7 @@ export default {
                             router: { path: "/home/monthList" }
                         },
                         {
-                            name:'季卡管理',
+                            name: '季卡管理',
                             router: { path: "/home/seasonList" }
                         },
                         {
@@ -39,8 +39,8 @@ export default {
                             router: { path: "/home/version" }
                         },
                         {
-                            name:'数据库管理',
-                            router:{ path :'/home/dataBase'}
+                            name: '数据库管理',
+                            router: { path: '/home/dataBase' }
                         }
 
                     ]
@@ -57,6 +57,31 @@ export default {
                     ]
                 }
             ],
+            navgroup2: [
+                {
+                    name: "基础管理",
+                    index: "1",
+                    icon: "el-icon-setting",
+                    sonMenu: [
+                        {
+                            name: "企业用户管理",
+                            router: { path: "/home/userList" }
+                        },
+                        {
+                            name: "测试码管理",
+                            router: { path: "/home/testCode" }
+                        },
+                        {
+                            name: "月卡管理",
+                            router: { path: "/home/monthList" }
+                        },
+                        {
+                            name: '季卡管理',
+                            router: { path: "/home/seasonList" }
+                        },
+                    ]
+                },
+            ]
 
 
         }

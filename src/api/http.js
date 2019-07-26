@@ -39,7 +39,7 @@ const login = (apiName, method, data) => {
 const sendRequest = (apiName, method="get", data={}, responseType = "json") => {
 
     if (!apiName) {
-        return
+        return;
     }
     //定义请求参数配置
     let config = {

@@ -23,9 +23,9 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="account" label="账号" min-width="100" width="200"></el-table-column>
       <el-table-column prop="realName" label="联系人名称" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="phone" label="电话" min-width="100" width="200"></el-table-column>
+      <el-table-column prop="phone" label="联系方式" min-width="100" width="200"></el-table-column>
       <el-table-column prop="comName" label="企业名称" min-width="100" width="200"></el-table-column>
-      <!-- <el-table-column prop="deviceSize" label="设备数量" min-width="100" width="200"></el-table-column> -->
+      <el-table-column prop="deviceSize" label="设备数量" min-width="100" width="200"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleObserveble(scope.$index, scope.row)">查看设备</el-button>
@@ -48,21 +48,43 @@
     <!-- 模态框 -->
     <el-dialog title="新增" :visible.sync="dialogFormVisible" @close="dialogClose">
       <el-form :model="dialogForm">
-        <el-form-item label="账号" label-width="120px">
-          <el-input v-model="dialogForm.account" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="联系人名称" label-width="120px">
-          <el-input v-model="dialogForm.realName" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="电话" label-width="120px">
-          <el-input v-model="dialogForm.phone" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="企业名称" label-width="120px">
-          <el-input v-model="dialogForm.comName" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="设备数量" label-width="120px">
-          <el-input v-model="dialogForm.deviceSize" autocomplete="off" type="number"></el-input>
-        </el-form-item>
+        <el-row>
+          <!-- left -->
+          <el-col :span="12">
+            <el-form-item label="账号" label-width="120px">
+              <el-input v-model="dialogForm.account" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="企业名称" label-width="120px">
+              <el-input v-model="dialogForm.comName" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <!-- right -->
+          <el-col :span="12">
+            <el-form-item label="联系人名称" label-width="120px">
+              <el-input v-model="dialogForm.realName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="联系方式" label-width="120px">
+              <el-input v-model="dialogForm.phone" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-form-item label="root状态" label-width="120px">
+            <el-select v-model="dialogForm.root" placeholder="非ROOT /ROOT">
+              <el-option label="非root" value="froot"></el-option>
+              <el-option label="root" value="root"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="功能开关" label-width="120px">
+            <el-checkbox-group v-model="dialogForm.gnkg" size="middle">
+               <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index.val">{{index.name}}</el-checkbox-button>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="设备数量" label-width="120px">
+            <el-input-number v-model="dialogForm.deviceSize" :min="1" :max="500"></el-input-number>
+          </el-form-item>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -73,7 +95,7 @@
 </template>
 
 <script>
-import {http} from "../../api/http";
+import { http } from "../../api/http";
 export default {
   components: {
     breadNav: () => import("../../components/common/bread.vue")
@@ -94,8 +116,20 @@ export default {
         realName: "",
         phone: "",
         comName: "",
-        deviceSize: ""
-      }
+        deviceSize: "",
+        root: "froot",
+        gnkg: []
+      },
+      gnOptions: [
+        {name:'功能一',val:1},
+        {name:'功能二',val:2},
+        {name:'功能三',val:3},
+        {name:'功能四',val:4},
+        {name:'功能五',val:5},
+        {name:'功能六',val:6},
+        {name:'功能七',val:7},
+        {name:'功能八',val:8},
+      ]
     };
   },
   created() {
@@ -152,11 +186,14 @@ export default {
       this.dialogFormVisible = !this.dialogFormVisible;
     },
     ok() {
-      http("/manager/createCom", "post", this.dialogForm).then(res => {
-        this.$message.success("添加成功");
-        this.dialogFormVisible = !this.dialogFormVisible;
-        this.getUserList();
-      });
+      console.log(this.dialogForm.gnkg)
+      //验证表单数据必填项目
+
+      // http("/manager/createCom", "post", this.dialogForm).then(res => {
+      //   this.$message.success("添加成功");
+      //   this.dialogFormVisible = !this.dialogFormVisible;
+      //   this.getUserList();
+      // });
     }
   }
 };

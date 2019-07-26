@@ -99,11 +99,6 @@
           </el-select>
         </el-form-item>
         <el-form-item label="功能开关">
-          <!-- <el-checkbox-group v-model="checkList">
-            <el-checkbox label="复选框 A"></el-checkbox>
-            <el-checkbox label="复选框 B"></el-checkbox>
-            <el-checkbox label="复选框 C"></el-checkbox>
-          </el-checkbox-group>-->
           <el-checkbox-group v-model="gnkg" size="mini">
             <el-checkbox-button v-for="city in cityOptions" :label="city" :key="city">{{city}}</el-checkbox-button>
           </el-checkbox-group>

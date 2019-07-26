@@ -29,7 +29,7 @@
 <script>
 import mixin from "../../util/mixin.js";
 export default {
-  mixins: [mixin],
+  // mixins: [mixin],
   props: {
     isCollapse: {
       type: Boolean,
@@ -39,11 +39,18 @@ export default {
   data() {
     return {};
   },
-  methods: {
-    handleOpen(key, keyPath) {
-    },
-    handleClose(key, keyPath) {
+  computed: {
+    navgroup() {
+      if (sessionStorage.getItem("level") == 1) {
+        return mixin.data().navgroup;
+      } else {
+        return mixin.data().navgroup2;
+      }
     }
+  },
+  methods: {
+    handleOpen(key, keyPath) {},
+    handleClose(key, keyPath) {}
   }
 };
 </script>
@@ -68,5 +75,4 @@ export default {
   width: 200px;
   min-height: 400px;
 }
-
 </style>
