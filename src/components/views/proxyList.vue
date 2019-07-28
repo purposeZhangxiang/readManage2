@@ -53,7 +53,7 @@
               <el-input v-model="proxyform.name" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="登陆账号" label-width="120px">
-              <el-input v-model="proxyform.account" autocomplete="off"></el-input>
+              <el-input v-model="proxyform.user" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -68,28 +68,20 @@
         <el-row>
           <!-- 非root -->
           <el-form-item label="已购非root码" label-width="120px">
-            <el-input-number v-model="proxyform.fRoot.size" :min="0" :max="500"></el-input-number>
+            <el-input-number v-model="proxyform.root_froot.frootSize" :min="0" :max="500"></el-input-number>
           </el-form-item>
           <el-form-item label="非root码功能" label-width="120px">
-            <el-checkbox-group v-model="proxyform.fRoot.gnkg" size="middle">
-              <el-checkbox-button
-                v-for="index in gnOptions"
-                :label="index"
-                :key="index.val"
-              >{{index.name}}</el-checkbox-button>
+            <el-checkbox-group v-model="proxyform.root_froot.frootGnkg" size="middle">
+              <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
           <!-- root -->
           <el-form-item label="已购root码" label-width="120px">
-            <el-input-number v-model="proxyform.root.size" :min="0" :max="500"></el-input-number>
+            <el-input-number v-model="proxyform.root_froot.rootSize" :min="0" :max="500"></el-input-number>
           </el-form-item>
           <el-form-item label="root码功能" label-width="120px">
-            <el-checkbox-group v-model="proxyform.root.gnkg" size="middle">
-              <el-checkbox-button
-                v-for="index in gnOptions"
-                :label="index"
-                :key="index.val"
-              >{{index.name}}</el-checkbox-button>
+            <el-checkbox-group v-model="proxyform.root_froot.rootGnkg" size="middle">
+              <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
         </el-row>
@@ -111,16 +103,8 @@ export default {
   data() {
     return {
       nowLocation: ["代理用户列表"],
-      tableData: [
-        {
-          name: "张三",
-          phone: "17761292322",
-          buyfRoot: 200,
-          fRootStatus: 123,
-          buyRoot: 200,
-          rootStatus: 123
-        }
-      ],
+      multipleSelection: [],
+      tableData: [],
       currentPage: 1,
       pageSize: 10,
       total: 0,
@@ -129,70 +113,151 @@ export default {
       proxyform: {
         name: "",
         phone: "",
-        username: "",
+        user: "",
         password: "123456",
-        root: {
-          gnkg: [],
-          size: ""
-        },
-        fRoot: {
-          gnkg: [],
-          size: ""
+        root_froot: {
+          frootGnkg: [],
+          frootSize: 0,
+          rootGnkg: [],
+          rootSize: 0
         }
       },
-      gnOptions: [
-        { name: "功能一", val: 1 },
-        { name: "功能二", val: 2 },
-        { name: "功能三", val: 3 },
-        { name: "功能四", val: 4 },
-        { name: "功能五", val: 5 },
-        { name: "功能六", val: 6 },
-        { name: "功能七", val: 7 },
-        { name: "功能八", val: 8 }
-      ]
+      // gnOptions: [
+      //   { name: "功能一", val: 1 },
+      //   { name: "功能二", val: 2 },
+      //   { name: "功能三", val: 3 },
+      //   { name: "功能四", val: 4 },
+      //   { name: "功能五", val: 5 },
+      //   { name: "功能六", val: 6 },
+      //   { name: "功能七", val: 7 },
+      //   { name: "功能八", val: 8 }
+      // ]
+      gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
   },
   created() {
     this.getProxyList();
   },
   methods: {
-    getProxyList() {
-      http("/manager/fetchAgentAdminList","get","").then(res => {});
+    getProxyList(page = 1, pageSize = 10) {
+      http("/manager/fetchAgentAdminList", "get").then(res => {
+        this.tableData = res.list;
+      });
     },
-    handleSelectionChange() {},
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
     addProxy() {
       this.proxyTitle = "新增代理";
       this.proxyDialog = true;
     },
-    deleteSome() {},
+    deleteSome() {
+      this.$confirm("确认删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        let delProxy = [];
+        for (let val of this.multipleSelection) {
+          delProxy.push(val.id);
+        }
+        http("/manager/agentAdminDel", "post", {
+          ids: delProxy.join(",")
+        }).then(res => {
+          this.$message.success("删除成功");
+          this.getProxyList();
+        });
+      });
+    },
     handleSizeChange() {},
     handleCurrentChange() {},
+    handleDelete(index, row) {
+      this.$confirm("确认删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        //整理出 要删除的设备
+        // let delcodes = [];
+        // for (let val of this.multipleSelection) {
+        //   delcodes.push(val.code);
+        // }
+        http("/manager/agentAdminDel", "post", { ids: row.id }).then(res => {
+          this.$message.success("删除成功");
+          this.getProxyList();
+        });
+      });
+    },
     proxySure() {
       if (this.proxyTitle === "新增代理") {
-        debugger;
-        http("/manager/createAgentAdmin", "post", {
-          user: "xx",
+        // let cloneData = this.proxyform;
+        // cloneData.root_froot.frootGnkg = cloneData.root_froot.frootGnkg.join(
+        //   ","
+        // );
+        // cloneData.root_froot.rootGnkg = cloneData.root_froot.rootGnkg.join(",");
+        // cloneData.accountCodeSettingList = JSON.stringify([
+        //   cloneData.root_froot
+        // ]);
+        // delete cloneData.root_froot;
+        // let rootGnkg=[],frootGnkg=[];
+        // for(let index in cloneData.root_froot.frootGnkg){
+        //   frootGnkg.push(cloneData.root_froot.frootGnkg[index].val)
+        // }
+        // cloneData.root_froot.frootGnkg
+        // for(let index in cloneData.root_froot.rootGnkg){
+        //   rootGnkg.push(cloneData.root_froot.rootGnkg[index].val)
+        // }
+        // delete cloneData.
+        // var json = {
+        //   accountCodeSettingList: [
+        //     {
+        //       frootGnkg: "string",
+        //       frootSize: 0,
+        //       rootGnkg: "string",
+        //       rootSize: 0
+        //     }
+        //   ],
+        //   name: "string",
+        //   password: "string",
+        //   phone: "string",
+        //   user: "string"
+        // };
+        let arr = [
+          {
+            frootGnkg: "2,3,4",
+            frootSize: 10,
+            rootGnkg: "1,2",
+            rootSize: 20
+          }
+        ];
+        let o = {
+          name: "ZX",
           password: "123",
-          userDeviceNum: 10
-        }).then(res => {
+          phone: "1776128738",
+          user: "ZX"
+        };
+        for (let index in arr) {
+          o["accountCodeSettingList[" + index + "].frootGnkg"] =
+            arr[index].frootGnkg;
+          o["accountCodeSettingList[" + index + "].frootSize"] =
+            arr[index].frootSize;
+          o["accountCodeSettingList[" + index + "].rootGnkg"] =
+            arr[index].rootGnkg;
+          o["accountCodeSettingList[" + index + "].rootSize"] =
+            arr[index].rootrootSizeGnkg;
+        }
+        debugger;
+        // const formData = new FormData();
+        // Object.keys(o).forEach(key => {
+        //   formData.append(key, o[key]);
+        // });
+        // console.log(formData)
+        // var jsonData = {};
+        // o.forEach((value, key) => (jsonData[key] = value));
+        http("/manager/createAgentAdmin", "post", o).then(res => {
           this.$message.success("新增代理用户成功！");
           this.getProxyList();
         });
-
-        let addProxy = {
-          name: "", //姓名
-          phone: "", //联系方式
-          username: "", //登陆后台的账户
-          password: "", //登陆后台的密码
-          root: {
-            gnkg: "123456", //root码功能开关
-            size: "" //root码数量
-          },
-          fRoot: {
-            gnkg: "123456", //非root码功能开关
-            size: "" //非root码数量
-          }
-        };
       } else if (this.proxyTitle === "编辑") {
       }
     }

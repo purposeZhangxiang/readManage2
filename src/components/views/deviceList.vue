@@ -5,14 +5,21 @@
     <!-- 操作栏 -->
     <el-form :inline="true" :model="formInline" class="operate">
       <el-form-item label>
-        <!-- <el-input v-model="formInline.size" type="number" placeholder="新增设备数量"></el-input> -->
         <el-input-number v-model="formInline.size" :min="0" :max="500" label="新增设备数量"></el-input-number>
       </el-form-item>
       <el-form-item>
-        <!-- <el-button type="primary" @click="search">查询</el-button> -->
         <el-button type="primary" @click="addMore">新增设备</el-button>
-        <el-button type="primary" @click="renew">续费</el-button>
+
         <el-button type="primary" @click="exportExcel">导出</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-select v-model="renewType" placeholder="续费方式">
+          <el-option label="月卡" value="1"></el-option>
+          <el-option label="季卡" value="3"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="renew">续费</el-button>
       </el-form-item>
     </el-form>
     <!-- 表格 -->
@@ -44,7 +51,7 @@
 </template>
 
 <script>
-import {http} from "../../api/http";
+import { http } from "../../api/http";
 export default {
   components: {
     breadNav: () => import("../../components/common/bread.vue")
@@ -55,6 +62,7 @@ export default {
       formInline: { size: "" },
       tableData: [],
       multipleSelection: [],
+      renewType: "1",
       currentPage: 1,
       total: 0
     };
@@ -85,7 +93,10 @@ export default {
         for (let val of this.multipleSelection) {
           deviceIds.push(val.deviceId);
         }
-        let json = { deviceIds: deviceIds.join(",") };
+        let json = {
+          deviceIds: deviceIds.join(","),
+          renewalType: this.renewalType
+        };
         http("/manager/renewalDevice", "post", json).then(res => {
           this.$message.success("续费成功");
           this.getDeviceList();
@@ -107,7 +118,7 @@ export default {
       }
     },
     exportExcel() {
-      http("/file/exportDevice", "get", this.$route.query,'blob')
+      http("/file/exportDevice", "get", this.$route.query, "blob");
     }
   }
 };

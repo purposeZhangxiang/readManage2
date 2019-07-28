@@ -47,7 +47,9 @@ const sendRequest = (apiName, method="get", data={}, responseType = "json") => {
         method: method,
         params: data || '',
         data: qs.stringify(data),
-        headers: {},
+        headers: {
+            // 'Content-Type': "application/json;charset=utf-8",
+        },
         responseType: responseType
     }
     //token验证部分
