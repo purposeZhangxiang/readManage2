@@ -19,15 +19,17 @@
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="name" label="代理用户姓名" min-width="100" width="150"></el-table-column>
-      <el-table-column prop="phone" label="代理用户手机" min-width="100" width="150"></el-table-column>
-      <el-table-column prop="buyfRoot" label="已购非ROOT码总数" min-width="100" width="180"></el-table-column>
+      <el-table-column prop="phone" label="联系方式" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="user" label="登陆账号" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="password" label="登陆密码" min-width="100" width="150"></el-table-column>
+      <!-- <el-table-column prop="buyfRoot" label="已购非ROOT码总数" min-width="100" width="180"></el-table-column>
       <el-table-column prop="fRootStatus" label="非ROOT码功能开关状态" min-width="100" width="200"></el-table-column>
       <el-table-column prop="buyRoot" label="已购ROOT码总数" min-width="100" width="150"></el-table-column>
-      <el-table-column prop="rootStatus" label="ROOT码功能开关状态" min-width="100" width="200"></el-table-column>
+      <el-table-column prop="rootStatus" label="ROOT码功能开关状态" min-width="100" width="200"></el-table-column>-->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleObserveble(scope.$index, scope.row)">开码状况</el-button>
-          <el-button size="mini" @click="handleObserveble(scope.$index, scope.row)">扩容</el-button>
+          <el-button size="mini" @click="handleExpansion(scope.$index, scope.row)">扩容</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -46,7 +48,8 @@
     </div>
     <!-- 弹出框 -->
     <el-dialog :title="proxyTitle" :visible.sync="proxyDialog">
-      <el-form :model="proxyform">
+      <!-- form 新增代理 -->
+      <el-form :model="proxyform" v-if="proxyTitle=='新增代理' ">
         <el-row>
           <el-col :span="12">
             <el-form-item label="代理姓名" label-width="120px">
@@ -58,7 +61,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="联系方式" label-width="120px">
-              <el-input v-model="proxyform.phone" autocomplete="off"></el-input>
+              <el-input maxlength="11" v-model="proxyform.phone" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="登陆密码" label-width="120px">
               <el-input v-model="proxyform.password" autocomplete="off"></el-input>
@@ -66,6 +69,47 @@
           </el-col>
         </el-row>
         <el-row>
+          <!-- 非root -->
+          <el-form-item label="已购非root码" label-width="120px">
+            <el-input-number v-model="proxyform.root_froot.frootSize" :min="0" :max="500"></el-input-number>
+          </el-form-item>
+          <el-form-item label="非root码功能" label-width="120px">
+            <el-checkbox-group v-model="proxyform.root_froot.frootGnkg" size="middle">
+              <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
+            </el-checkbox-group>
+          </el-form-item>
+          <!-- root -->
+          <el-form-item label="已购root码" label-width="120px">
+            <el-input-number v-model="proxyform.root_froot.rootSize" :min="0" :max="500"></el-input-number>
+          </el-form-item>
+          <el-form-item label="root码功能" label-width="120px">
+            <el-checkbox-group v-model="proxyform.root_froot.rootGnkg" size="middle">
+              <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-row>
+      </el-form>
+      <!-- form 扩容 -->
+      <el-form :model="proxyform" v-if="proxyTitle=='扩容' ">
+        <!-- <el-row>
+          <el-col :span="12">
+            <el-form-item label="代理姓名" label-width="120px">
+              <el-input v-model="proxyform.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="登陆账号" label-width="120px">
+              <el-input v-model="proxyform.user" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="联系方式" label-width="120px">
+              <el-input maxlength="11" v-model="proxyform.phone" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="登陆密码" label-width="120px">
+              <el-input v-model="proxyform.password" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row> -->
           <!-- 非root -->
           <el-form-item label="已购非root码" label-width="120px">
             <el-input-number v-model="proxyform.root_froot.frootSize" :min="0" :max="500"></el-input-number>
@@ -122,16 +166,6 @@ export default {
           rootSize: 0
         }
       },
-      // gnOptions: [
-      //   { name: "功能一", val: 1 },
-      //   { name: "功能二", val: 2 },
-      //   { name: "功能三", val: 3 },
-      //   { name: "功能四", val: 4 },
-      //   { name: "功能五", val: 5 },
-      //   { name: "功能六", val: 6 },
-      //   { name: "功能七", val: 7 },
-      //   { name: "功能八", val: 8 }
-      // ]
       gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
   },
@@ -142,6 +176,7 @@ export default {
     getProxyList(page = 1, pageSize = 10) {
       http("/manager/fetchAgentAdminList", "get").then(res => {
         this.tableData = res.list;
+        console.log(res.list);
       });
     },
     handleSelectionChange(val) {
@@ -171,17 +206,16 @@ export default {
     },
     handleSizeChange() {},
     handleCurrentChange() {},
+    handleExpansion(index, row) {
+      this.proxyDialog=true;
+      this.proxyTitle="扩容"
+    },
     handleDelete(index, row) {
       this.$confirm("确认删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        //整理出 要删除的设备
-        // let delcodes = [];
-        // for (let val of this.multipleSelection) {
-        //   delcodes.push(val.code);
-        // }
         http("/manager/agentAdminDel", "post", { ids: row.id }).then(res => {
           this.$message.success("删除成功");
           this.getProxyList();
@@ -190,76 +224,42 @@ export default {
     },
     proxySure() {
       if (this.proxyTitle === "新增代理") {
-        // let cloneData = this.proxyform;
-        // cloneData.root_froot.frootGnkg = cloneData.root_froot.frootGnkg.join(
-        //   ","
-        // );
-        // cloneData.root_froot.rootGnkg = cloneData.root_froot.rootGnkg.join(",");
-        // cloneData.accountCodeSettingList = JSON.stringify([
-        //   cloneData.root_froot
-        // ]);
-        // delete cloneData.root_froot;
-        // let rootGnkg=[],frootGnkg=[];
-        // for(let index in cloneData.root_froot.frootGnkg){
-        //   frootGnkg.push(cloneData.root_froot.frootGnkg[index].val)
-        // }
-        // cloneData.root_froot.frootGnkg
-        // for(let index in cloneData.root_froot.rootGnkg){
-        //   rootGnkg.push(cloneData.root_froot.rootGnkg[index].val)
-        // }
-        // delete cloneData.
-        // var json = {
-        //   accountCodeSettingList: [
-        //     {
-        //       frootGnkg: "string",
-        //       frootSize: 0,
-        //       rootGnkg: "string",
-        //       rootSize: 0
-        //     }
-        //   ],
-        //   name: "string",
-        //   password: "string",
-        //   phone: "string",
-        //   user: "string"
-        // };
-        let arr = [
-          {
-            frootGnkg: "2,3,4",
-            frootSize: 10,
-            rootGnkg: "1,2",
-            rootSize: 20
-          }
-        ];
-        let o = {
-          name: "ZX",
-          password: "123",
-          phone: "1776128738",
-          user: "ZX"
-        };
-        for (let index in arr) {
-          o["accountCodeSettingList[" + index + "].frootGnkg"] =
-            arr[index].frootGnkg;
-          o["accountCodeSettingList[" + index + "].frootSize"] =
-            arr[index].frootSize;
-          o["accountCodeSettingList[" + index + "].rootGnkg"] =
-            arr[index].rootGnkg;
-          o["accountCodeSettingList[" + index + "].rootSize"] =
-            arr[index].rootrootSizeGnkg;
-        }
-        debugger;
-        // const formData = new FormData();
-        // Object.keys(o).forEach(key => {
-        //   formData.append(key, o[key]);
-        // });
-        // console.log(formData)
-        // var jsonData = {};
-        // o.forEach((value, key) => (jsonData[key] = value));
-        http("/manager/createAgentAdmin", "post", o).then(res => {
+        let cloneData = JSON.parse(JSON.stringify(this.proxyform));
+        let root_froot = cloneData.root_froot;
+        root_froot.frootGnkg = this.binary(root_froot.frootGnkg);
+        root_froot.rootGnkg = this.binary(root_froot.rootGnkg);
+        let arr = [root_froot];
+        this.createJson(cloneData, arr);
+        http("/manager/createAgentAdmin", "post", cloneData).then(res => {
           this.$message.success("新增代理用户成功！");
           this.getProxyList();
         });
       } else if (this.proxyTitle === "编辑") {
       }
+      this.proxyDialog = false;
+    },
+    // binary处理成二进制开关
+    binary(arr) {
+      arr.sort((x, y) => x - y);
+      for (let i = 0; i < 8; i++) {
+        arr[i] !== i + 1 ? arr.splice(i, 0, 0) : arr.splice(i, 1, 1);
+      }
+      return arr.reverse().join("");
+    },
+    // 构建json
+    createJson(json, arr) {
+      for (let index in arr) {
+        json["accountCodeSettingList[" + index + "].frootGnkg"] =
+          arr[index].frootGnkg;
+        json["accountCodeSettingList[" + index + "].frootSize"] =
+          arr[index].frootSize;
+        json["accountCodeSettingList[" + index + "].rootGnkg"] =
+          arr[index].rootGnkg;
+        json["accountCodeSettingList[" + index + "].rootSize"] =
+          arr[index].rootSize;
+      }
+      delete json.root_froot;
+      return json;
     }
   }
 };
