@@ -91,25 +91,7 @@
       </el-form>
       <!-- form 扩容 -->
       <el-form :model="proxyform" v-if="proxyTitle=='扩容' ">
-        <!-- <el-row>
-          <el-col :span="12">
-            <el-form-item label="代理姓名" label-width="120px">
-              <el-input v-model="proxyform.name" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="登陆账号" label-width="120px">
-              <el-input v-model="proxyform.user" autocomplete="off"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="联系方式" label-width="120px">
-              <el-input maxlength="11" v-model="proxyform.phone" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="登陆密码" label-width="120px">
-              <el-input v-model="proxyform.password" autocomplete="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row> -->
+        <el-row>
           <!-- 非root -->
           <el-form-item label="已购非root码" label-width="120px">
             <el-input-number v-model="proxyform.root_froot.frootSize" :min="0" :max="500"></el-input-number>
