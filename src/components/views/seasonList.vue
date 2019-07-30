@@ -99,8 +99,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="功能开关">
-          <el-checkbox-group v-model="gnkg" size="mini">
-            <el-checkbox-button v-for="city in cityOptions" :label="city" :key="city">{{city}}</el-checkbox-button>
+          <el-checkbox-group v-model="gnkg" size="middle">
+            <el-checkbox-button v-for="item in gnOptions" :label="item" :key="item">{{item}}</el-checkbox-button>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="生成数量" label-width="200">
@@ -177,13 +177,33 @@ export default {
       },
       checkList: {},
       gnkg: [],
-      cityOptions:['功能一', '功能二', '功能三', '功能四','功能五', '功能六', '功能七', '功能八']
+      gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
   },
   created() {
     this.getSeasonList();
   },
   methods: {
+    /**
+     * @method {handleSelectionChange} checkbox勾选回调
+     * @method {handleEdit}
+     * @method {handleSizeChange} 切换当前页展示最多条数
+     * @method {handleCurrentChange} 切换页码
+     * @method {getSeasonList} 获取季卡列表
+     * @method {search} 筛选查看季卡
+     * @method {createCode} 生成月卡
+     * @method {exportExcel} 导出
+     * @method {deleteSome} 批量删除季卡
+     * @method {exportSuc} 导出的模态框确认按钮
+     * @method {seasonSuc} 生成季卡模态框确认按钮
+     * @method
+     * @method
+     * @method
+     * @method
+     * @method
+     * @method
+     * @method
+     */
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
@@ -197,7 +217,6 @@ export default {
       this.currentPage = val;
       this.getSeasonList(val, this.pageSize);
     },
-    //============================
     getSeasonList(currentPage = 1, pageSize = 10) {
       http("/manager/codeList", "post", {
         page: currentPage,
@@ -258,7 +277,7 @@ export default {
     },
     exportSuc() {},
     seasonSuc() {
-      console.log(this.gnkg)
+      console.log(this.gnkg);
     }
   }
 };

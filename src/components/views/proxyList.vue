@@ -28,7 +28,7 @@
       <el-table-column prop="rootStatus" label="ROOT码功能开关状态" min-width="100" width="200"></el-table-column>-->
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleObserveble(scope.$index, scope.row)">开码状况</el-button>
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改基础信息</el-button>
           <el-button size="mini" @click="handleExpansion(scope.$index, scope.row)">扩容</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
@@ -69,7 +69,6 @@
           </el-col>
         </el-row>
         <el-row>
-          <!-- 非root -->
           <el-form-item label="已购非root码" label-width="120px">
             <el-input-number v-model="proxyform.root_froot.frootSize" :min="0" :max="500"></el-input-number>
           </el-form-item>
@@ -78,7 +77,6 @@
               <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
-          <!-- root -->
           <el-form-item label="已购root码" label-width="120px">
             <el-input-number v-model="proxyform.root_froot.rootSize" :min="0" :max="500"></el-input-number>
           </el-form-item>
@@ -89,24 +87,43 @@
           </el-form-item>
         </el-row>
       </el-form>
-      <!-- form 扩容 -->
-      <el-form :model="proxyform" v-if="proxyTitle=='扩容' ">
+      <!-- from 基础信息修改 -->
+      <el-form :model="proxyform3" v-if="proxyTitle=='编辑基础信息' ">
         <el-row>
-          <!-- 非root -->
+          <el-col :span="12">
+            <el-form-item label="代理姓名" label-width="120px">
+              <el-input v-model="proxyform3.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="登陆账号" label-width="120px">
+              <el-input v-model="proxyform3.user" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="联系方式" label-width="120px">
+              <el-input maxlength="11" v-model="proxyform3.phone" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="登陆密码" label-width="120px">
+              <el-input v-model="proxyform3.password" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <!-- form 扩容 -->
+      <el-form :model="proxyform2" v-if="proxyTitle=='扩容' ">
+        <el-row>
           <el-form-item label="已购非root码" label-width="120px">
-            <el-input-number v-model="proxyform.root_froot.frootSize" :min="0" :max="500"></el-input-number>
+            <el-input-number v-model="proxyform2.frootSize" :min="0" :max="500"></el-input-number>
           </el-form-item>
           <el-form-item label="非root码功能" label-width="120px">
-            <el-checkbox-group v-model="proxyform.root_froot.frootGnkg" size="middle">
+            <el-checkbox-group v-model="proxyform2.frootGnkg" size="middle">
               <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
-          <!-- root -->
           <el-form-item label="已购root码" label-width="120px">
-            <el-input-number v-model="proxyform.root_froot.rootSize" :min="0" :max="500"></el-input-number>
+            <el-input-number v-model="proxyform2.rootSize" :min="0" :max="500"></el-input-number>
           </el-form-item>
           <el-form-item label="root码功能" label-width="120px">
-            <el-checkbox-group v-model="proxyform.root_froot.rootGnkg" size="middle">
+            <el-checkbox-group v-model="proxyform2.rootGnkg" size="middle">
               <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
@@ -148,6 +165,20 @@ export default {
           rootSize: 0
         }
       },
+      // proxyform2扩容专用
+      proxyform2: {
+        frootGnkg: [],
+        frootSize: 0,
+        rootGnkg: [],
+        rootSize: 0
+      },
+      // 基础信息修改专用
+      proxyform3: {
+        name: "",
+        phone: "",
+        user: "",
+        password: ""
+      },
       gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
   },
@@ -156,10 +187,13 @@ export default {
   },
   methods: {
     getProxyList(page = 1, pageSize = 10) {
-      http("/manager/fetchAgentAdminList", "get").then(res => {
-        this.tableData = res.list;
-        console.log(res.list);
-      });
+      http("/manager/fetchAgentAdminList", "get", { page, pageSize }).then(
+        res => {
+          this.tableData = res.list;
+          this.total = res.total;
+          console.log(res);
+        }
+      );
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -186,11 +220,22 @@ export default {
         });
       });
     },
-    handleSizeChange() {},
-    handleCurrentChange() {},
+    handleSizeChange(val) {
+      this.getProxyList(1, val);
+    },
+    handleCurrentChange(val) {
+      this.getProxyList(val);
+    },
+    handleEdit(index, row) {
+      this.proxyDialog = true;
+      this.proxyTitle = "编辑基础信息";
+      // this.row_id = row.id;
+      Object.assign(this.proxyform3, row);
+    },
     handleExpansion(index, row) {
-      this.proxyDialog=true;
-      this.proxyTitle="扩容"
+      this.proxyDialog = true;
+      this.proxyTitle = "扩容";
+      this.row_id = row.id;
     },
     handleDelete(index, row) {
       this.$confirm("确认删除?", "提示", {
@@ -216,7 +261,21 @@ export default {
           this.$message.success("新增代理用户成功！");
           this.getProxyList();
         });
-      } else if (this.proxyTitle === "编辑") {
+      } else if (this.proxyTitle === "扩容") {
+        let cloneData = JSON.parse(JSON.stringify(this.proxyform2));
+        cloneData.frootGnkg = this.binary(cloneData.frootGnkg);
+        cloneData.rootGnkg = this.binary(cloneData.rootGnkg);
+        cloneData.id = this.row_id;
+        let arr = [cloneData];
+        this.createJson(cloneData, arr);
+        http("/manager/agentAdminUpdate", "post", cloneData).then(res => {
+          debugger;
+        });
+      } else if (this.proxyTitle === "编辑基础信息") {
+        // debugger
+        http("/manager/agentAdminUpdate", "post", this.proxyform3).then(res => {
+          debugger;
+        });
       }
       this.proxyDialog = false;
     },
