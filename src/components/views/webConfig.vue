@@ -85,11 +85,11 @@ export default {
       http("/url/queryAllUrl", "get").then(res => {
         let cloneRes = res.list;
         for (let index in cloneRes) {
-          if ((cloneRes[index].status = "0")) {
+          if (cloneRes[index].status == "0") {
             cloneRes[index].status = "无效";
-          } else if ((cloneRes[index].status = "1")) {
+          } else if (cloneRes[index].status == "1") {
             cloneRes[index].status = "有效";
-          } else if ((cloneRes[index].status = "2")) {
+          } else if (cloneRes[index].status == "2") {
             cloneRes[index].status = "默认有效";
           }
         }
@@ -124,13 +124,11 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(this.multipleSelection);
     },
     handleEdit(index, row) {
       this.webDialog = true;
       this.webDialogTitle = "编辑url";
       Object.assign(this.webform, row);
-      console.log(row);
     },
     handleDelete(index, row) {
       this.$confirm("确认删除?", "提示", {
@@ -147,19 +145,16 @@ export default {
     webSure() {
       if (this.webDialogTitle === "新增url") {
         http("/url/add", "post", this.webform).then(res => {
-          this.webDialog = false;
           this.$message.success("新增成功");
-          this.getWebConfig(); //刷新
+          this.getWebConfig();
         });
       } else if (this.webDialogTitle === "编辑url") {
-        debugger;
-        console.log(webform);
         http("/url/update", "post", this.webform).then(res => {
-          this.webDialog = false;
           this.$message.success("修改url成功");
-          this.getWebConfig(); //刷新
+          this.getWebConfig();
         });
       }
+      this.webDialog = !this.webDialog;
     }
   }
 };

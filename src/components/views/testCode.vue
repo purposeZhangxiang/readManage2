@@ -127,7 +127,6 @@ export default {
       });
     },
     exportExcel() {
-      debugger;
       let obj = {
         page: this.currentPage,
         pageSize: this.pageSize,

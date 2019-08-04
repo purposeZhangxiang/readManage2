@@ -5,22 +5,21 @@
     <el-form :inline="true" class="operate">
       <el-form-item>
         <el-select v-model="state" placeholder="激活码状态">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
+          <el-option label="全部" value="0"></el-option>
+          <el-option label="未激活" value="1"></el-option>
+          <el-option label="已激活" value="2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
         <el-select v-model="rootState" placeholder="root状态">
-          <el-option
+          <!-- <el-option
             v-for="item in rootOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
-          ></el-option>
+          ></el-option>-->
+          <el-option label="root" value="1"></el-option>
+          <el-option label="非root" value="2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -41,6 +40,8 @@
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="code" label="激活码" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="rootType" label="root状态" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="gnkg" label="功能开关" min-width="100" width="150"></el-table-column>
       <el-table-column
         prop="expireTime"
         label="到期时间"
@@ -62,25 +63,27 @@
       ></el-pagination>
     </div>
     <!-- 导出功能弹出层 -->
-    <el-dialog title="导出" :visible.sync="exportdiaVisible" width="30%">
+    <el-dialog title="导出" :visible.sync="exportdiaVisible" width="20%">
       <el-form :model="exportform">
-        <el-form-item label="激活状态" label-width="200">
-          <el-select v-model="exportform.jhzt" placeholder="全部 /已激活/ 未激活">
-            <el-option label="全部" value="all"></el-option>
-            <el-option label="已激活" value="jh"></el-option>
-            <el-option label="未激活" value="wjh"></el-option>
+        <el-form-item label="导出状态" label-width="200">
+          <el-select v-model="exportform.exportType">
+            <el-option label="导出全部" value="0"></el-option>
+            <el-option label="导出全部已激活" value="1"></el-option>
+            <el-option label="导出全部未激活" value="2"></el-option>
+            <el-option label="导出当前页" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="root状态" label-width="200">
-          <el-select v-model="exportform.root" placeholder="非ROOT /ROOT">
-            <el-option label="非root" value="froot"></el-option>
-            <el-option label="root" value="root"></el-option>
+          <el-select v-model="exportform.rootType">
+            <el-option label="root" value="1"></el-option>
+            <el-option label="非root" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="导出状态" label-width="200">
-          <el-select v-model="exportform.quan" placeholder="当前页 /所有">
-            <el-option label="当前页" value="current"></el-option>
-            <el-option label="所有" value="all"></el-option>
+        <el-form-item label="激活状态" label-width="200" v-if="exportform.exportType==3">
+          <el-select v-model="exportform.state">
+            <el-option label="全部" value="0"></el-option>
+            <el-option label="未激活" value="1"></el-option>
+            <el-option label="已激活" value="2"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -93,18 +96,18 @@
     <el-dialog title="生成季卡激活码" :visible.sync="seasonVisible" width="40%">
       <el-form :model="seasonform">
         <el-form-item label="root状态" label-width="200">
-          <el-select v-model="seasonform.root" placeholder="非ROOT /ROOT">
-            <el-option label="非root" value="froot"></el-option>
-            <el-option label="root" value="root"></el-option>
+          <el-select v-model="seasonform.rootType" placeholder="非ROOT /ROOT">
+            <el-option label="root" value="1"></el-option>
+            <el-option label="非root" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="功能开关">
-          <el-checkbox-group v-model="gnkg" size="middle">
+          <el-checkbox-group v-model="seasonform.gnkg" size="middle">
             <el-checkbox-button v-for="item in gnOptions" :label="item" :key="item">{{item}}</el-checkbox-button>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="生成数量" label-width="200">
-          <el-input-number v-model="seasonform.seasonNum" :min="1" :max="500"></el-input-number>
+          <el-input-number v-model="seasonform.size" :min="1" :max="500"></el-input-number>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -117,6 +120,7 @@
 
 <script>
 import { http } from "../../api/http";
+import globalFunc from "../../util/globalFunction";
 export default {
   components: {
     breadNav: () => import("../../components/common/bread.vue")
@@ -124,39 +128,9 @@ export default {
   data() {
     return {
       nowLocation: ["季卡列表"],
-      state: 0, //
-      options: [
-        {
-          label: "全部",
-          value: 0
-        },
-        {
-          label: "未激活",
-          value: 1
-        },
-        {
-          label: "已激活",
-          value: 2
-        }
-      ],
-      rootState: "非root",
-      rootOptions: [
-        {
-          label: "非root",
-          value: "非root"
-        },
-        {
-          label: "root",
-          value: "root"
-        }
-      ],
-      exportState: "当页",
-      exportOption: [
-        {
-          label: "当页",
-          value: "当页"
-        }
-      ],
+      type: "3", //3-季卡
+      state: "0", //el-optinos
+      rootState: "1", //el-optinos
       multipleSelection: [],
       tableData: [],
       currentPage: 1,
@@ -165,18 +139,18 @@ export default {
       /**导出模态框数据 */
       exportdiaVisible: false,
       exportform: {
-        jhzt: "all",
-        root: "非root",
-        quan: "current"
+        exportType: "0",
+        rootType: "1",
+        state: "0"
       },
       /**生成月卡模态框数据 */
       seasonVisible: false,
       seasonform: {
-        root: "非root",
-        seasonNum: 0
+        rootType: "1",
+        gnkg: [],
+        size: 0
       },
       checkList: {},
-      gnkg: [],
       gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
   },
@@ -221,8 +195,9 @@ export default {
       http("/manager/codeList", "post", {
         page: currentPage,
         pageSize: pageSize,
-        type: 1, //月卡
-        state: this.state //激活状态
+        type: this.type, //季卡
+        state: this.state, //激活状态
+        rootType: this.rootState
       }).then(res => {
         for (let item of res.list) {
           item.expireTime === null
@@ -238,20 +213,9 @@ export default {
     },
     createCode() {
       this.seasonVisible = !this.seasonVisible;
-      // http("/manager/createCode", "post", { type: 1 }).then(res => {
-      //   this.$message.success("已随机生成50个激活码");
-      //   this.getSeasonList();
-      // });
     },
     exportExcel() {
       this.exportdiaVisible = !this.exportdiaVisible;
-      // let obj = {
-      //   page: this.currentPage,
-      //   pageSize: this.pageSize,
-      //   type: 1,
-      //   state: this.state
-      // };
-      // http("/file/exportCode", "get", obj, "blob");
     },
     deleteSome() {
       if (this.multipleSelection.length == 0) {
@@ -275,9 +239,37 @@ export default {
         });
       }
     },
-    exportSuc() {},
+    exportSuc() {
+      console.log(this.exportform);
+      let obj = {};
+      if (this.exportform.exportType == 3) {
+        //当前页
+        obj = {
+          page: this.currentPage,
+          pageSize: this.pageSize,
+          type: this.type,
+          state: this.state
+        };
+      } else {
+        //导出全部
+        obj = {
+          type: this.type,
+          rootType: this.exportform.rootType,
+          exportType: this.exportform.exportType
+        };
+        debugger;
+      }
+      http("/file/exportCode", "get", obj, "blob");
+    },
     seasonSuc() {
-      console.log(this.gnkg);
+      let cloneData = JSON.parse(JSON.stringify(this.seasonform));
+      cloneData.gnkg = globalFunc.binary(cloneData.gnkg);
+      cloneData["type"] = this.type;
+      console.log(this.cloneData);
+      http("/manager/createCode", "post", cloneData).then(res => {
+        this.$message.success("ok");
+        this.getSeasonList();
+      });
     }
   }
 };

@@ -71,14 +71,14 @@
 
         <el-row>
           <el-form-item label="root状态" label-width="120px">
-            <el-select v-model="dialogForm.root" placeholder="非ROOT /ROOT">
-              <el-option label="非root" value="froot"></el-option>
-              <el-option label="root" value="root"></el-option>
+            <el-select v-model="dialogForm.rootStatus" placeholder="非ROOT /ROOT">
+              <el-option label="root" value="1"></el-option>
+              <el-option label="非root" value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="功能开关" label-width="120px">
             <el-checkbox-group v-model="dialogForm.gnkg" size="middle">
-               <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index.val">{{index.name}}</el-checkbox-button>
+              <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="设备数量" label-width="120px">
@@ -96,6 +96,7 @@
 
 <script>
 import { http } from "../../api/http";
+import globalFunc from "../../util/globalFunction";
 export default {
   components: {
     breadNav: () => import("../../components/common/bread.vue")
@@ -117,19 +118,10 @@ export default {
         phone: "",
         comName: "",
         deviceSize: "",
-        root: "froot",
+        rootStatus: "1",
         gnkg: []
       },
-      gnOptions: [
-        {name:'功能一',val:1},
-        {name:'功能二',val:2},
-        {name:'功能三',val:3},
-        {name:'功能四',val:4},
-        {name:'功能五',val:5},
-        {name:'功能六',val:6},
-        {name:'功能七',val:7},
-        {name:'功能八',val:8},
-      ]
+      gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
   },
   created() {
@@ -169,9 +161,9 @@ export default {
         this.dialogForm[index] = "";
       }
     },
-    getUserList(currentPage, comName) {
+    getUserList(currentPage = 1, comName) {
       http("/manager/userList", "get", {
-        page: currentPage || 1,
+        page: currentPage,
         pageSize: 10,
         comName: comName || ""
       }).then(res => {
@@ -186,14 +178,33 @@ export default {
       this.dialogFormVisible = !this.dialogFormVisible;
     },
     ok() {
-      console.log(this.dialogForm.gnkg)
+      let cloneData = JSON.parse(JSON.stringify(this.dialogForm));
       //验证表单数据必填项目
-
-      // http("/manager/createCom", "post", this.dialogForm).then(res => {
-      //   this.$message.success("添加成功");
-      //   this.dialogFormVisible = !this.dialogFormVisible;
-      //   this.getUserList();
-      // });
+      let arr = [
+        {
+          gnkg: globalFunc.binary(cloneData.gnkg),
+          size: cloneData.deviceSize,
+          type: cloneData.rootStatus
+        }
+      ];
+      this.createJson(cloneData, arr);
+      //删除多余字段
+      delete cloneData.gnkg;
+      delete cloneData.deviceSize;
+      delete cloneData.rootStatus;
+      http("/manager/createCom", "post", cloneData).then(res => {
+        this.$message.success("添加成功");
+        this.dialogFormVisible = !this.dialogFormVisible;
+        this.getUserList();
+      });
+    },
+    createJson(json, arr) {
+      for (let index in arr) {
+        json["root[" + index + "].size"] = arr[index].size;
+        json["root[" + index + "].type"] = arr[index].type;
+        json["root[" + index + "].gnkg"] = arr[index].gnkg;
+      }
+      return json;
     }
   }
 };

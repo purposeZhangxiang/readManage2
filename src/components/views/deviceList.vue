@@ -12,7 +12,7 @@
 
         <el-button type="primary" @click="exportExcel">导出</el-button>
       </el-form-item>
-      <el-form-item>
+      <el-form-item label="续费方式">
         <el-select v-model="renewType" placeholder="续费方式">
           <el-option label="月卡" value="1"></el-option>
           <el-option label="季卡" value="3"></el-option>
@@ -95,8 +95,9 @@ export default {
         }
         let json = {
           deviceIds: deviceIds.join(","),
-          renewalType: this.renewalType
+          renewalType: this.renewType
         };
+        debugger;
         http("/manager/renewalDevice", "post", json).then(res => {
           this.$message.success("续费成功");
           this.getDeviceList();

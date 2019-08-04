@@ -50,6 +50,10 @@ const menuRouter = {
         {
             path: "proxyList",
             component: () => import('../components/views/proxyList.vue')
+        },
+        {
+            path: "proxyDetail",
+            component: () => import('../components/views/proxyDetail.vue')
         }
 
     ]

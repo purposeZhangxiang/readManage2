@@ -27,7 +27,7 @@ const login = (apiName, method, data) => {
                 }
 
             })
-            .catch(res => {
+            .catch(err => {
                 Message.error(err)
                 reject(err)
             })
@@ -36,7 +36,7 @@ const login = (apiName, method, data) => {
 
 
 
-const sendRequest = (apiName, method="get", data={}, responseType = "json") => {
+const sendRequest = (apiName, method = "get", data = {}, responseType = "json", ) => {
 
     if (!apiName) {
         return;
@@ -48,7 +48,7 @@ const sendRequest = (apiName, method="get", data={}, responseType = "json") => {
         params: data || '',
         data: qs.stringify(data),
         headers: {
-            // 'Content-Type': "application/json;charset=utf-8",
+            // "Content-Type": "application/json;charset=UTF-8"
         },
         responseType: responseType
     }
@@ -65,7 +65,7 @@ const sendRequest = (apiName, method="get", data={}, responseType = "json") => {
             router.push({ path: '/login' });
             return;
         }
-    } 
+    }
     //关于data的处理,如果后台按照序列化的标准接受就采用qs模块去处理post请求参数
     if (!data) {
         delete config.params;
@@ -85,10 +85,10 @@ const sendRequest = (apiName, method="get", data={}, responseType = "json") => {
                     if (res.data.code === 0) {
                         resolve(res.data.data)
                     } else if (res.data.code === 1 && res.data.msg == "请登陆！") {
-                        // router.push({ path: '/login' })
-                    }else if (config.responseType = "blob" && res.data.type == "application/csv") {
-                        downloadExcel(res.data)
-                    }else {
+                        router.push({ path: '/login' })
+                    } else if (config.responseType == "blob") {
+                        downloadExcel(res.data, res.data.type)
+                    } else {
                         reject(res.data)
                         Message.error(res.data.msg)
                     }
@@ -105,20 +105,23 @@ const sendRequest = (apiName, method="get", data={}, responseType = "json") => {
 
 
 
-    function downloadExcel(data) {
+    function downloadExcel(data, type) {
         if (!data) {
-            return
+            return;
         }
         let url = window.URL.createObjectURL(new Blob([data]))
         let link = document.createElement('a')
         link.style.display = 'none'
         link.href = url;
-        link.setAttribute('download', 'excel.csv');
-
+        if (type == "application/csv") {
+            link.setAttribute('download', 'excel.csv')
+        } else if (type == "application/sql") {
+            link.setAttribute('download', 'database.sql');
+        }
         document.body.appendChild(link);
         link.click();
+        // link.setAttribute('download', 'excel.csv');
     }
-
 }
 
 export {

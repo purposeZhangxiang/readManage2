@@ -22,14 +22,11 @@
       <el-table-column prop="phone" label="联系方式" min-width="100" width="150"></el-table-column>
       <el-table-column prop="user" label="登陆账号" min-width="100" width="150"></el-table-column>
       <el-table-column prop="password" label="登陆密码" min-width="100" width="150"></el-table-column>
-      <!-- <el-table-column prop="buyfRoot" label="已购非ROOT码总数" min-width="100" width="180"></el-table-column>
-      <el-table-column prop="fRootStatus" label="非ROOT码功能开关状态" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="buyRoot" label="已购ROOT码总数" min-width="100" width="150"></el-table-column>
-      <el-table-column prop="rootStatus" label="ROOT码功能开关状态" min-width="100" width="200"></el-table-column>-->
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <el-button size="mini" @click="handleDetail(scope.$index, scope.row)">查看详情</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改基础信息</el-button>
-          <el-button size="mini" @click="handleExpansion(scope.$index, scope.row)">扩容</el-button>
+          <!-- <el-button size="mini" @click="handleExpansion(scope.$index, scope.row)">扩容</el-button> -->
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -139,6 +136,7 @@
 
 <script>
 import { http } from "../../api/http";
+import globalFunc from "../../util/globalFunction";
 export default {
   components: {
     breadNav: () => import("../../components/common/bread.vue")
@@ -226,6 +224,12 @@ export default {
     handleCurrentChange(val) {
       this.getProxyList(val);
     },
+    handleDetail(index, row) {
+      this.$router.push({
+        path: "/home/proxyDetail",
+        query: { proxyId: row.id }
+      });
+    },
     handleEdit(index, row) {
       this.proxyDialog = true;
       this.proxyTitle = "编辑基础信息";
@@ -253,39 +257,24 @@ export default {
       if (this.proxyTitle === "新增代理") {
         let cloneData = JSON.parse(JSON.stringify(this.proxyform));
         let root_froot = cloneData.root_froot;
-        root_froot.frootGnkg = this.binary(root_froot.frootGnkg);
-        root_froot.rootGnkg = this.binary(root_froot.rootGnkg);
+        root_froot.frootGnkg = globalFunc.binary(root_froot.frootGnkg);
+        root_froot.rootGnkg = globalFunc.binary(root_froot.rootGnkg);
         let arr = [root_froot];
         this.createJson(cloneData, arr);
         http("/manager/createAgentAdmin", "post", cloneData).then(res => {
           this.$message.success("新增代理用户成功！");
           this.getProxyList();
         });
-      } else if (this.proxyTitle === "扩容") {
-        let cloneData = JSON.parse(JSON.stringify(this.proxyform2));
-        cloneData.frootGnkg = this.binary(cloneData.frootGnkg);
-        cloneData.rootGnkg = this.binary(cloneData.rootGnkg);
-        cloneData.id = this.row_id;
-        let arr = [cloneData];
-        this.createJson(cloneData, arr);
-        http("/manager/agentAdminUpdate", "post", cloneData).then(res => {
-          debugger;
-        });
       } else if (this.proxyTitle === "编辑基础信息") {
-        // debugger
-        http("/manager/agentAdminUpdate", "post", this.proxyform3).then(res => {
-          debugger;
+        let cloneData = JSON.parse(JSON.stringify(this.proxyform3));
+        //删除多余参数
+        delete cloneData.accountCodeSettingList;
+        http("/manager/agentAdminUpdate", "post", cloneData).then(res => {
+          this.$message.success("修改成功");
+          this.getProxyList();
         });
       }
       this.proxyDialog = false;
-    },
-    // binary处理成二进制开关
-    binary(arr) {
-      arr.sort((x, y) => x - y);
-      for (let i = 0; i < 8; i++) {
-        arr[i] !== i + 1 ? arr.splice(i, 0, 0) : arr.splice(i, 1, 1);
-      }
-      return arr.reverse().join("");
     },
     // 构建json
     createJson(json, arr) {
@@ -320,3 +309,5 @@ export default {
   border-bottom: 1px solid #ccc;
 }
 </style>
+
+

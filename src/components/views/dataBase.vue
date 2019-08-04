@@ -2,6 +2,11 @@
   <div>
     <breadNav :nowLocation="nowLocation" />
     <!-- 操作栏 -->
+    <el-form :inline="true" class="operate">
+      <el-form-item>
+        <el-button type="primary" @click="backups">备份数据库</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -13,11 +18,15 @@ export default {
   },
   data() {
     return {
-      nowLocation: ["数据库管理"]
+      nowLocation: ["数据库管理"],
     };
   },
   methods: {
-
+    backups() {
+      http("/file/exportMySqlDB", "get", "", "blob").then(res => {
+        this.$message.success("备份成功");
+      });
+    }
   }
 };
 </script>

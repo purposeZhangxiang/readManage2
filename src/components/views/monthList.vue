@@ -1,6 +1,6 @@
 <template>
   <div>
-    <breadNav :nowLocation="nowLocation"/>
+    <breadNav :nowLocation="nowLocation" />
     <!-- 操作栏 -->
     <el-form :inline="true" class="operate">
       <el-form-item>
@@ -16,7 +16,7 @@
       <el-form-item>
         <el-button type="primary" @click="search">查看</el-button>
         <el-button type="primary" @click="createCode">生成月卡</el-button>
-        <el-button type="primary" @click="exportExcel">导出当页</el-button>
+        <el-button type="primary" @click="exportExcel">导出</el-button>
         <el-button type="danger" @click="deleteSome">批量删除</el-button>
       </el-form-item>
     </el-form>
@@ -51,6 +51,34 @@
         :total="total"
       ></el-pagination>
     </div>
+    <!-- 导出功能弹出层 -->
+    <el-dialog title="导出" :visible.sync="exportdiaVisible" width="30%">
+      <el-form :model="exportform">
+        <el-form-item label="激活状态" label-width="200">
+          <el-select v-model="exportform.jhzt" placeholder="全部 /已激活/ 未激活">
+            <el-option label="全部" value="all"></el-option>
+            <el-option label="已激活" value="jh"></el-option>
+            <el-option label="未激活" value="wjh"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="root状态" label-width="200">
+          <el-select v-model="exportform.root" placeholder="非ROOT /ROOT">
+            <el-option label="非root" value="froot"></el-option>
+            <el-option label="root" value="root"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="导出状态" label-width="200">
+          <el-select v-model="exportform.quan" placeholder="当前页 /所有">
+            <el-option label="当前页" value="current"></el-option>
+            <el-option label="所有" value="all"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="exportdiaVisible = false">取 消</el-button>
+        <el-button type="primary" @click="exportSuc">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -92,7 +120,10 @@ export default {
       tableData: [],
       currentPage: 1,
       pageSize: 10, //当前页展示条数
-      total: 10
+      total: 10,
+      // dialog
+      exportdiaVisible: false,
+      exportform: {}
     };
   },
   created() {
@@ -110,7 +141,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getCodeList(val,this.pageSize);
+      this.getCodeList(val, this.pageSize);
     },
     //============================
     getCodeList(currentPage, pageSize) {
@@ -133,17 +164,29 @@ export default {
       this.getCodeList();
     },
     createCode() {
+   
       http("/manager/createCode", "post", { type: 1 }).then(res => {
         this.$message.success("已随机生成50个激活码");
         this.getCodeList();
       });
     },
     exportExcel() {
+      this.exportdiaVisible = true;
+      // let obj = {
+      //   page: this.currentPage,
+      //   pageSize: this.pageSize,
+      //   type: 1,
+      //   state: this.state
+      // };
+      // http("/file/exportCode", "get", obj, "blob");
+    },
+    exportSuc() {
       let obj = {
-        page: this.currentPage,
-        pageSize: this.pageSize,
+        // page: this.currentPage,
+        // pageSize: this.pageSize,
         type: 1,
-        state: this.state
+        // state: this.state,
+        exportType: 0
       };
       http("/file/exportCode", "get", obj, "blob");
     },
