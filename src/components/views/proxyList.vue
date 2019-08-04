@@ -189,7 +189,6 @@ export default {
         res => {
           this.tableData = res.list;
           this.total = res.total;
-          console.log(res);
         }
       );
     },

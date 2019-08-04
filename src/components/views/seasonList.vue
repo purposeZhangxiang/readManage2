@@ -143,7 +143,7 @@ export default {
         rootType: "1",
         state: "0"
       },
-      /**生成月卡模态框数据 */
+      /**生成季卡模态框数据 */
       seasonVisible: false,
       seasonform: {
         rootType: "1",
@@ -240,7 +240,6 @@ export default {
       }
     },
     exportSuc() {
-      console.log(this.exportform);
       let obj = {};
       if (this.exportform.exportType == 3) {
         //当前页
@@ -257,7 +256,6 @@ export default {
           rootType: this.exportform.rootType,
           exportType: this.exportform.exportType
         };
-        debugger;
       }
       http("/file/exportCode", "get", obj, "blob");
     },
@@ -265,7 +263,6 @@ export default {
       let cloneData = JSON.parse(JSON.stringify(this.seasonform));
       cloneData.gnkg = globalFunc.binary(cloneData.gnkg);
       cloneData["type"] = this.type;
-      console.log(this.cloneData);
       http("/manager/createCode", "post", cloneData).then(res => {
         this.$message.success("ok");
         this.getSeasonList();

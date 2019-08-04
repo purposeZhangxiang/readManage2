@@ -128,6 +128,14 @@ export default {
     this.getUserList();
   },
   methods: {
+    /**
+     * @method {handleSelectionChange}
+     * @method {handleObserveble}
+     * @method {handleDelete}
+     * @method {handleSizeChange}
+     * @method {handleCurrentChange}
+     *
+     */
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
@@ -161,11 +169,11 @@ export default {
         this.dialogForm[index] = "";
       }
     },
-    getUserList(currentPage = 1, comName) {
+    getUserList(currentPage = 1, comName = "") {
       http("/manager/userList", "get", {
         page: currentPage,
         pageSize: 10,
-        comName: comName || ""
+        comName
       }).then(res => {
         this.tableData = res.list;
         this.total = res.total;

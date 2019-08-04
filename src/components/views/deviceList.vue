@@ -8,7 +8,7 @@
         <el-input-number v-model="formInline.size" :min="0" :max="500" label="新增设备数量"></el-input-number>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="addMore">新增设备</el-button>
+        <el-button type="primary" @click="addMore">扩容设备</el-button>
 
         <el-button type="primary" @click="exportExcel">导出</el-button>
       </el-form-item>
@@ -80,6 +80,7 @@ export default {
     },
     getDeviceList() {
       http("/manager/deviceList", "post", this.$route.query).then(res => {
+        debugger
         this.tableData = res;
         this.total = res.length;
       });
@@ -97,7 +98,6 @@ export default {
           deviceIds: deviceIds.join(","),
           renewalType: this.renewType
         };
-        debugger;
         http("/manager/renewalDevice", "post", json).then(res => {
           this.$message.success("续费成功");
           this.getDeviceList();
