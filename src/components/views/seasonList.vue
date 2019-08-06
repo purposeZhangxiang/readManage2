@@ -247,7 +247,9 @@ export default {
           page: this.currentPage,
           pageSize: this.pageSize,
           type: this.type,
-          state: this.state
+          rootType: this.exportform.rootType,
+          state: this.state,
+          exportType: 3
         };
       } else {
         //导出全部
