@@ -266,7 +266,8 @@ export default {
       cloneData.gnkg = globalFunc.binary(cloneData.gnkg);
       cloneData["type"] = this.type;
       http("/manager/createCode", "post", cloneData).then(res => {
-        this.$message.success("ok");
+        this.$message.success("生成季卡成功");
+        this.seasonVisible = !this.seasonVisible;
         this.getSeasonList();
       });
     }

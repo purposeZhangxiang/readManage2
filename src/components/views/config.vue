@@ -4,9 +4,6 @@
     <breadNav :nowLocation="nowLocation"></breadNav>
     <!-- 操作栏 -->
     <el-form :inline="true" class="operate">
-      <!-- <el-form-item label>
-        <el-input v-model="formInline.content" placeholder="搜索栏"></el-input>
-      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" @click="add">新增配置</el-button>
       </el-form-item>
@@ -28,6 +25,7 @@
       <el-table-column prop="ondDayReadAmount" label="每天最大阅读量" min-width="100" width="200"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">进入包配置</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改配置</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除配置</el-button>
         </template>
@@ -156,6 +154,15 @@ export default {
     add() {
       this.dialogFormVisible = !this.dialogFormVisible;
       this.dialogTitle = "新增配置";
+    },
+    handlePackage(index, row) {
+      console.log(row.packageName);
+      this.$router.push({
+        path:'/home/packageManage',
+        query:{
+          packageName:row.packageName
+        }
+      })
     },
     handleEdit(idnex, row) {
       this.dialogFormVisible = !this.dialogFormVisible;

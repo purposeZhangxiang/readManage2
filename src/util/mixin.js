@@ -41,7 +41,7 @@ export default {
                         {
                             name: '数据库管理',
                             router: { path: '/home/dataBase' }
-                        }
+                        },
 
                     ]
                 },
@@ -64,8 +64,12 @@ export default {
                     icon: "el-icon-setting",
                     sonMenu: [
                         {
+                            name: "代理必看",
+                            router: { path: "/home/proxyInfo" }
+                        },
+                        {
                             name: "企业用户管理",
-                            router: { path: "/home/userList" }
+                            router: { path: "/home/userListProxy" }
                         },
                         // {
                         //     name: "测试码管理",

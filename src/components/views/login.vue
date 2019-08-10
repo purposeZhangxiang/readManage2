@@ -68,10 +68,6 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
            this.$store.dispatch("login",this.formObj);
-          // login("/manager/login", "post", this.formObj).then(res => {
-          //   sessionStorage.setItem("token", res.token);
-          //   this.$router.push("/home");
-          // });
         } else {
           return false;
         }

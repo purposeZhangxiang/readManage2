@@ -12,6 +12,15 @@
         <el-button type="primary" @click="add">新增企业</el-button>
       </el-form-item>
     </el-form>
+    <p>
+      代理用户您好,你当前剩余的root码剩余
+      <span
+        class="color"
+      >{{typeof rootRemain=='object'?rootRemain[0].codeData.remain:"0"}}</span>个,非root码剩余
+      <span
+        class="color"
+      >{{typeof frootRemain=='object'?frootRemain[0].codeData.remain:"0"}}</span>个,感谢您对微星科技的支持！
+    </p>
     <!-- 表格 -->
     <el-table
       ref="multipleTable"
@@ -104,6 +113,9 @@ export default {
   data() {
     return {
       nowLocation: ["公司管理"],
+      //代理剩余码查询
+      rootRemain: "",
+      frootRemain: "",
       formInline: {
         content: ""
       },
@@ -124,8 +136,9 @@ export default {
       gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
   },
-  created() {
+  mounted() {
     this.getUserList();
+    this.queryEx();
   },
   methods: {
     /**
@@ -136,7 +149,22 @@ export default {
      * @method {handleCurrentChange}
      *
      */
-    
+    queryEx() {
+      http("/manager/fetchAgentLaveFunCode", "get", {
+        rootType: "1",
+        agentId: "8895"
+      }).then(res => {
+        this.$nextTick(() => {
+          this.rootRemain = res;
+        });
+      });
+      http("/manager/fetchAgentLaveFunCode", "get", {
+        rootType: "2",
+        agentId: "8895"
+      }).then(res => {
+        this.frootRemain = res;
+      });
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
@@ -196,24 +224,71 @@ export default {
           type: cloneData.rootStatus
         }
       ];
-      this.createJson(cloneData, arr);
+      this.verfiy(cloneData, arr); //验证类型和数量
+      // this.createJson(cloneData, arr);
       //删除多余字段
-      delete cloneData.gnkg;
-      delete cloneData.deviceSize;
-      delete cloneData.rootStatus;
-      http("/manager/createCom", "post", cloneData).then(res => {
+      // delete cloneData.gnkg;
+      // delete cloneData.deviceSize;
+      // delete cloneData.rootStatus;
+      // http("/manager/createCom", "post", cloneData).then(res => {
+      //   this.$message.success("添加成功");
+      //   this.dialogFormVisible = !this.dialogFormVisible;
+      //   this.getUserList();
+      // });
+    },
+    //构建json数据
+    createJson(json, arr) {
+      //代理必要的参数settingId
+      for (let index in arr) {
+        json["root[" + index + "].size"] = arr[index].size;
+        json["root[" + index + "].type"] = arr[index].type;
+        json["root[" + index + "].gnkg"] = arr[index].gnkg;
+        json["root[" + index + "].settingId"] = arr[index].settingId;
+      }
+      // console.log(json);
+      // return json;
+      this.createdCompany(json);
+    },
+    createdCompany(options) {
+      http("/manager/createCom", "post", options).then(res => {
         this.$message.success("添加成功");
         this.dialogFormVisible = !this.dialogFormVisible;
         this.getUserList();
       });
     },
-    createJson(json, arr) {
-      for (let index in arr) {
-        json["root[" + index + "].size"] = arr[index].size;
-        json["root[" + index + "].type"] = arr[index].type;
-        json["root[" + index + "].gnkg"] = arr[index].gnkg;
+    verfiy(cloneData, options) {
+      for (let index in options) {
+        //root
+        if (options[index].type == "1") {
+          for (let val of this.rootRemain) {
+            if (
+              options[index].gnkg == val.codeData.gnkg &&
+              options[index].size <= val.codeData.remain
+            ) {
+              console.log("if");
+              options[index].settingId = val.settingId;
+              this.createJson(cloneData, options);
+              return;
+            } else {
+              this.$message.warning("功能开关选项错误或者数量错误");
+            }
+          }
+        } else if (options[index].type == "2") {
+          //froot
+          for (let val of this.frootRemain) {
+            if (
+              options[index].gnkg == val.codeData.gnkg &&
+              options[index].size <= val.codeData.remain
+            ) {
+              options[index].settingId = val.settingId;
+              this.createJson(cloneData, options);
+              return;
+            } else {
+              this.$message.warning("功能开关选项错误或者数量错误");
+            }
+          }
+        }
       }
-      return json;
     }
   }
 };
@@ -232,5 +307,19 @@ export default {
   align-items: center;
   border-bottom: 1px solid #ccc;
 }
+.color {
+  color: red;
+  font-size: 20px;
+}
 </style>
+
+
+
+
+
+
+
+
+
+
 

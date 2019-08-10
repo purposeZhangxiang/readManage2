@@ -9,7 +9,6 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="addMore">扩容设备</el-button>
-
         <el-button type="primary" @click="exportExcel">导出</el-button>
       </el-form-item>
       <el-form-item label="续费方式">
@@ -33,6 +32,9 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="deviceId" label="设备id" min-width="100" width="200"></el-table-column>
       <el-table-column prop="deviceNo" label="设备编号" min-width="100" width="200"></el-table-column>
+      <el-table-column prop="rootType" label="root类型" min-width="100" width="200"></el-table-column>
+      <el-table-column prop="gnkg" label="功能开关" min-width="100" width="200"></el-table-column>
+      <el-table-column prop="activeDate" label="激活时间" min-width="100" width="200"></el-table-column>
       <el-table-column prop="expireTime" label="过期时间" min-width="100" width="200"></el-table-column>
     </el-table>
     <!-- 分页 -->

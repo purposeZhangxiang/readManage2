@@ -93,7 +93,7 @@
       </span>
     </el-dialog>
     <!-- 生成季卡弹出层 -->
-    <el-dialog title="生成月卡激活码" :visible.sync="seasonVisible" width="40%">
+    <el-dialog title="生成月卡激活码" :visible.sync="monthVisible" width="40%">
       <el-form :model="seasonform">
         <el-form-item label="root状态" label-width="200">
           <el-select v-model="seasonform.rootType" placeholder="非ROOT /ROOT">
@@ -111,7 +111,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="seasonVisible = false">取 消</el-button>
+        <el-button @click="monthVisible = false">取 消</el-button>
         <el-button type="primary" @click="monthSuc">确 定</el-button>
       </span>
     </el-dialog>
@@ -144,7 +144,7 @@ export default {
         state: "0"
       },
       /**生成月卡模态框数据 */
-      seasonVisible: false,
+      monthVisible: false,
       seasonform: {
         rootType: "1",
         gnkg: [],
@@ -207,7 +207,7 @@ export default {
       this.getMonthList();
     },
     createCode() {
-      this.seasonVisible = !this.seasonVisible;
+      this.monthVisible = !this.monthVisible;
     },
     exportExcel() {
       this.exportdiaVisible = !this.exportdiaVisible;
@@ -262,6 +262,7 @@ export default {
       cloneData["type"] = this.type;
       http("/manager/createCode", "post", cloneData).then(res => {
         this.$message.success("生成月卡成功");
+        this.monthVisible = !this.monthVisible;
         this.getMonthList();
       });
     }
