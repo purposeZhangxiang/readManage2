@@ -34,11 +34,11 @@
 </template>
 
 <script>
-import { http } from "../../api/http";
-import globalFunc from "../../util/globalFunction";
+import { http } from "../../../api/http";
+import globalFunc from "../../../util/globalFunction";
 export default {
   components: {
-    breadNav: () => import("../../components/common/bread.vue")
+    breadNav: () => import("../../../components/common/bread.vue")
   },
   data() {
     return {

@@ -57,16 +57,16 @@ const menuRouter = {
         },
         {
             path: "userListProxy",
-            component: () => import("../components/views/userListProxy.vue")
+            component: () => import("../components/views/proxyFile/userListProxy.vue")
         },
         {
             path: "proxyInfo",
-            component: () => import("../components/views/proxyInfo.vue")
+            component: () => import("../components/views/proxyFile/proxyInfo.vue")
         },
         {
             path: 'packageManage',
             component: () => import("../components/views/packageManage.vue")
-        }, 
+        },
         {
             path: 'subData',
             component: () => import("../components/views/subData.vue")
