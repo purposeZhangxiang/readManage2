@@ -60,6 +60,10 @@ const menuRouter = {
             component: () => import("../components/views/proxyFile/userListProxy.vue")
         },
         {
+            path: "proxyDeviceList",
+            component: () => import("../components/views/proxyFile/proxyDeviceList.vue")
+        },
+        {
             path: "proxyInfo",
             component: () => import("../components/views/proxyFile/proxyInfo.vue")
         },

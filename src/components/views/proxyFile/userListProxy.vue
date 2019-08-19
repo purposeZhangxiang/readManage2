@@ -151,16 +151,12 @@ export default {
      */
     queryEx() {
       http("/manager/fetchAgentLaveFunCode", "get", {
-        rootType: "1",
-        agentId: "8895"
+        rootType: "1"
       }).then(res => {
-        this.$nextTick(() => {
-          this.rootRemain = res;
-        });
+        this.rootRemain = res;
       });
       http("/manager/fetchAgentLaveFunCode", "get", {
-        rootType: "2",
-        agentId: "8895"
+        rootType: "2"
       }).then(res => {
         this.frootRemain = res;
       });
@@ -170,7 +166,7 @@ export default {
     },
     handleObserveble(index, row) {
       this.$router.push({
-        path: "/home/deviceList",
+        path: "/home/proxyDeviceList",
         query: { comId: row.comId }
       });
     },
