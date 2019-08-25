@@ -38,7 +38,7 @@
       <el-table-column prop="expireTime" label="过期时间" min-width="100" width="200"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleChange(scope.$index, scope.row)">修改设备码功能</el-button>
+          <!-- <el-button size="mini" @click="handleChange(scope.$index, scope.row)">修改设备码功能</el-button> -->
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>

@@ -8,7 +8,7 @@
         <el-input-number v-model="formInline.size" :min="0" :max="500" label="新增设备数量"></el-input-number>
       </el-form-item>-->
       <el-form-item>
-        <el-button type="primary" @click="addMore">扩容设备</el-button>
+        <!-- <el-button type="primary" @click="addMore">扩容设备</el-button> -->
         <el-button type="primary" @click="exportExcel">导出</el-button>
       </el-form-item>
       <!-- <el-form-item label="续费方式">
@@ -36,12 +36,6 @@
       <el-table-column prop="gnkg" label="功能开关" min-width="100" width="200"></el-table-column>
       <el-table-column prop="activeDate" label="激活时间" min-width="100" width="200"></el-table-column>
       <el-table-column prop="expireTime" label="过期时间" min-width="100" width="200"></el-table-column>
-      <!-- <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleChange(scope.$index, scope.row)">修改设备码功能</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column> -->
     </el-table>
     <!-- 分页 -->
     <div class="page">

@@ -6,39 +6,77 @@
     <div class="section">
       <div class="total">
         <p class="font">当前代理用户数</p>
-        <p class="num">17</p>
+        <p class="num">{{proxyTotal}}</p>
       </div>
       <div class="total">
         <p class="font">企业号总数</p>
-        <p class="num">137</p>
+        <p class="num">{{companyUserTotal}}</p>
       </div>
       <div class="total">
         <p class="font">企业设备总数</p>
-        <p class="num">5108</p>
+        <p class="num">{{deviceTotal}}</p>
       </div>
       <div class="total">
         <p class="font">已激活月卡</p>
-        <p class="num">7306</p>
+        <p class="num">{{monthTotal}}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { http } from "../../api/http";
 export default {
-  data(){
-    return{
-
-    }
+  data() {
+    return {
+      proxyTotal: "",
+      companyUserTotal: "",
+      deviceTotal: "",
+      monthTotal: ""
+    };
   },
-  methods:{
-    
+  created() {
+    this.getTotal();
+  },
+  methods: {
+    getTotal() {
+      // 代理用户数
+      http("/manager/fetchAgentAdminList", "get").then(res => {
+        this.proxyTotal = res.total;
+      });
+      // 当前代理数量
+      http("/manager/userList", "get").then(res => {
+        this.companyUserTotal = res.total;
+        //企业用户设备吗
+        let deviceTotal = 0;
+        for (let val of res.list) {
+          deviceTotal += val.deviceSize;
+        }
+        this.deviceTotal = deviceTotal;
+      });
+      // 激活的月卡
+      http("/manager/codeList", "post", {
+        type: 1,
+        state: 2,
+        rootType: 1 //root
+      }).then(res => {
+        let rootSize = res.total;
+        http("/manager/codeList", "post", {
+          type: 1,
+          state: 2,
+          rootType: 2 //root
+        }).then(res => {
+          let frootSize = res.total;
+          this.monthTotal = rootSize + frootSize;
+        });
+      });
+    }
   }
 };
 </script>
 
 <style lang="less" scoped>
-.bg{
+.bg {
   // background: url("../../assets/img/welcome.png")no-repeat;
   // width: 100%;
   // height: 100vh;

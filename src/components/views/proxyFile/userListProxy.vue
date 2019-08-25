@@ -14,12 +14,8 @@
     </el-form>
     <p>
       代理用户您好,你当前剩余的root码剩余
-      <span
-        class="color"
-      >{{typeof rootRemain=='object'?rootRemain[0].codeData.remain:"0"}}</span>个,非root码剩余
-      <span
-        class="color"
-      >{{typeof frootRemain=='object'?frootRemain[0].codeData.remain:"0"}}</span>个,感谢您对微星科技的支持！
+      <span class="color">{{rootTotalNum}}</span>个,非root码剩余
+      <span class="color">{{frootTotalNum}}</span>个,感谢您对微星科技的支持！
     </p>
     <!-- 表格 -->
     <el-table
@@ -73,7 +69,7 @@
               <el-input v-model="dialogForm.realName" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="联系方式" label-width="120px">
-              <el-input v-model="dialogForm.phone" autocomplete="off"></el-input>
+              <el-input maxlength="11" v-model="dialogForm.phone"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -115,7 +111,9 @@ export default {
       nowLocation: ["公司管理"],
       //代理剩余码查询
       rootRemain: "",
+      rootTotalNum: 0,
       frootRemain: "",
+      frootTotalNum: 0,
       formInline: {
         content: ""
       },
@@ -154,11 +152,21 @@ export default {
         rootType: "1"
       }).then(res => {
         this.rootRemain = res;
+        let sum = 0;
+        for (let val of res) {
+          sum += val.codeData.total;
+        }
+        this.rootTotalNum = sum;
       });
       http("/manager/fetchAgentLaveFunCode", "get", {
         rootType: "2"
       }).then(res => {
         this.frootRemain = res;
+        let sum = 0;
+        for (let val of res) {
+          sum += val.codeData.total;
+        }
+        this.frootTotalNum = sum;
       });
     },
     handleSelectionChange(val) {
@@ -252,6 +260,7 @@ export default {
         this.getUserList();
       });
     },
+    //前端验证
     verfiy(cloneData, options) {
       for (let index in options) {
         //root

@@ -7,6 +7,11 @@
         <el-button type="primary" @click="expansionNewType">扩容新种类码</el-button>
       </el-form-item>
     </el-form>
+    <p>
+      该代理用户共购买root码
+      <span class="total">{{rootTotal}}</span> 个,非root码
+      <span class="total">{{frootTotal}}</span> 个
+    </p>
     <!-- 表格 -->
     <el-table
       ref="multipleTable"
@@ -29,7 +34,7 @@
       </el-table-column>
     </el-table>
     <!-- 模态框 -->
-    <el-dialog :title="proxyTitle" :visible.sync="proxyDialog"  width="30%">
+    <el-dialog :title="proxyTitle" :visible.sync="proxyDialog" width="30%">
       <!-- form 扩容新类型 -->
       <el-form :model="proxyformType" v-if="proxyTitle=='扩容新种类' ">
         <el-row>
@@ -97,7 +102,9 @@ export default {
         frootSize: "",
         rootSize: ""
       },
-      row: {}
+      row: {},
+      rootTotal: "",
+      frootTotal: ""
     };
   },
   created() {
@@ -113,6 +120,14 @@ export default {
         id: this.proxyId
       }).then(res => {
         this.tableData = res.accountCodeSettingList;
+        let root = 0,
+          froot = 0;
+        for (let val of res.accountCodeSettingList) {
+          root += val.rootSize;
+          froot += val.frootSize;
+        }
+        this.rootTotal = root;
+        this.frootTotal = froot;
       });
     },
     search() {
@@ -139,18 +154,24 @@ export default {
       );
     },
     createJson(json, arr) {
+      // 两种类码都存在时 需要过滤size=0的情况
+      debugger;
       for (let index in arr) {
         if (this.proxyTitle == "扩容数量") {
           json["accountCodeSettingList[" + index + "].id"] = arr[index].id;
         }
-        json["accountCodeSettingList[" + index + "].frootGnkg"] =
-          arr[index].frootGnkg;
-        json["accountCodeSettingList[" + index + "].frootSize"] =
-          arr[index].frootSize;
-        json["accountCodeSettingList[" + index + "].rootGnkg"] =
-          arr[index].rootGnkg;
-        json["accountCodeSettingList[" + index + "].rootSize"] =
-          arr[index].rootSize;
+        if (arr[index].frootSize > 0) {
+          json["accountCodeSettingList[" + index + "].frootGnkg"] =
+            arr[index].frootGnkg;
+          json["accountCodeSettingList[" + index + "].frootSize"] =
+            arr[index].frootSize;
+        }
+        if (arr[index].rootSize > 0) {
+          json["accountCodeSettingList[" + index + "].rootGnkg"] =
+            arr[index].rootGnkg;
+          json["accountCodeSettingList[" + index + "].rootSize"] =
+            arr[index].rootSize;
+        }
       }
       return json;
     },
@@ -178,12 +199,13 @@ export default {
         let cloneData = JSON.parse(JSON.stringify(this.row));
         let arr = [Object.assign(cloneData, this.proxyformSize)];
         let obj = this.createJson(json, [cloneData]);
+        debugger;
         http("/manager/agentAdminUpdate", "post", obj).then(res => {
           this.$message.success("扩容成功");
           this.getDetail();
         });
       }
-      this.proxyDialog=false;
+      this.proxyDialog = false;
     }
   }
 };
@@ -201,6 +223,10 @@ export default {
   justify-content: flex-end;
   align-items: center;
   border-bottom: 1px solid #ccc;
+}
+.total {
+  font-size: 20px;
+  color: red;
 }
 </style>
 
