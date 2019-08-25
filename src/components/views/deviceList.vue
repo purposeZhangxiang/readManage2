@@ -4,9 +4,9 @@
     <breadNav :nowLocation="nowLocation"></breadNav>
     <!-- 操作栏 -->
     <el-form :inline="true" :model="formInline" class="operate">
-      <!-- <el-form-item label>
+      <el-form-item label>
         <el-input-number v-model="formInline.size" :min="0" :max="500" label="新增设备数量"></el-input-number>
-      </el-form-item>-->
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="addMore">扩容设备</el-button>
         <el-button type="primary" @click="exportExcel">导出</el-button>
@@ -162,20 +162,20 @@ export default {
       }
     },
     addMore() {
-      this.dialogFormVisible = !this.dialogFormVisible;
-      this.dialogTitle = "扩容设备码";
-      // if (this.formInline.size == 0) {
-      //   this.$message.warning("数量必须大于0");
-      // } else {
-      //   let obj = {
-      //     comId: this.$route.query.comId,
-      //     size: this.formInline.size
-      //   };
-      //   http("/manager/addDeviceSize", "post", obj).then(res => {
-      //     this.$message.success("新增设备" + obj.size + "台成功");
-      //     this.getDeviceList();
-      //   });
-      // }
+      // this.dialogFormVisible = !this.dialogFormVisible;
+      // this.dialogTitle = "扩容设备码";
+      if (this.formInline.size == 0) {
+        this.$message.warning("数量必须大于0");
+      } else {
+        let obj = {
+          comId: this.$route.query.comId,
+          size: this.formInline.size
+        };
+        http("/manager/addDeviceSize", "post", obj).then(res => {
+          this.$message.success("新增设备" + obj.size + "台成功");
+          this.getDeviceList();
+        });
+      }
     },
     exportExcel() {
       http("/file/exportDevice", "get", this.$route.query, "blob");

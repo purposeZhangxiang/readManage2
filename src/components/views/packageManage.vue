@@ -17,7 +17,7 @@
       @selection-change="handleSelectionChange"
     >
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-      <el-table-column prop="packageName" label="包名" min-width="100" width="200"></el-table-column>
+      <el-table-column prop="listName" label="listName" min-width="100" width="200"></el-table-column>
       <el-table-column prop="code" label="编码" min-width="100" width="200"></el-table-column>
       <el-table-column prop="remark" label="备注" min-width="100" width="200"></el-table-column>
       <el-table-column prop="status" label="状态" min-width="100" width="200"></el-table-column>
@@ -35,8 +35,8 @@
         <el-row>
           <!-- left -->
           <el-col :span="12">
-            <el-form-item label="包名" label-width="120px">
-              <el-input v-model="dialogForm.packageName" autocomplete="off" readonly></el-input>
+            <el-form-item label="listName" label-width="120px">
+              <el-input v-model="dialogForm.listName" autocomplete="off" ></el-input>
             </el-form-item>
             <el-form-item label="状态" label-width="120px">
               <el-select v-model="dialogForm.status">
@@ -78,7 +78,7 @@ export default {
       dialogFormVisible: false,
       dialogTitle: "",
       dialogForm: {
-        packageName: "",
+        listName: "",
         code: "",
         remark: "",
         status: ""
@@ -93,9 +93,7 @@ export default {
   },
   methods: {
     getPackage() {
-      http("/appParameters/queryParamsList", "get", {
-        packageName: this.routeParam.packageName
-      }).then(res => {
+      http("/appParameters/queryParamsList", "get").then(res => {
         this.tableData = res.list;
       });
     },
@@ -107,7 +105,6 @@ export default {
     },
     handleSelectionChange() {},
     handleSubData(index, row) {
-      console.log(row.id);
       this.$router.push({
         path: "/home/subData",
         query: {

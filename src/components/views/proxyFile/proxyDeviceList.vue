@@ -79,7 +79,7 @@
             </el-checkbox-group>
           </el-form-item>
         </el-row>
-      </el-form> -->
+      </el-form>-->
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="ok()">确 定</el-button>

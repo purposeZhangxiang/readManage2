@@ -5,7 +5,8 @@
     <!-- 操作栏 -->
     <el-form :inline="true" class="operate">
       <el-form-item>
-        <el-button type="primary" @click="add">新增配置</el-button>
+        <el-button type="primary" @click="add">新增阅读配置</el-button>
+        <el-button type="primary" @click="handlePackage">云更新配置管理</el-button>
       </el-form-item>
     </el-form>
     <!-- 表格 -->
@@ -25,8 +26,8 @@
       <el-table-column prop="ondDayReadAmount" label="每天最大阅读量" min-width="100" width="200"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">进入包配置</el-button>
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改配置</el-button>
+          <!-- <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">进入包配置</el-button> -->
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改阅读配置</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除配置</el-button>
         </template>
       </el-table-column>
@@ -155,14 +156,10 @@ export default {
       this.dialogFormVisible = !this.dialogFormVisible;
       this.dialogTitle = "新增配置";
     },
-    handlePackage(index, row) {
-      console.log(row.packageName);
+    handlePackage() {
       this.$router.push({
-        path:'/home/packageManage',
-        query:{
-          packageName:row.packageName
-        }
-      })
+        path: "/home/packageManage"
+      });
     },
     handleEdit(idnex, row) {
       this.dialogFormVisible = !this.dialogFormVisible;
