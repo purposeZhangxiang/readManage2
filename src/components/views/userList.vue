@@ -28,6 +28,7 @@
       <el-table-column prop="deviceSize" label="设备数量" min-width="100" width="200"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <el-button size="mini" @click="handleUpdate(scope.$index, scope.row)">更新基础信息</el-button>
           <el-button size="mini" @click="handleObserveble(scope.$index, scope.row)">查看设备</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>

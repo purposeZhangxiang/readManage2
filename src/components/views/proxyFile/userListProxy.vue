@@ -108,7 +108,7 @@ export default {
   },
   data() {
     return {
-      nowLocation: ["公司管理"],
+      nowLocation: ["企业用户管理"],
       //代理剩余码查询
       rootRemain: "",
       rootTotalNum: 0,

@@ -71,13 +71,13 @@ export default {
                             name: "企业用户管理",
                             router: { path: "/home/userListProxy" }
                         },
+                        {
+                            name: "月卡管理",
+                            router: { path: "/home/monthListProxy" }
+                        },
                         // {
                         //     name: "测试码管理",
                         //     router: { path: "/home/testCode" }
-                        // },
-                        // {
-                        //     name: "月卡管理",
-                        //     router: { path: "/home/monthList" }
                         // },
                         // {
                         //     name: '季卡管理',

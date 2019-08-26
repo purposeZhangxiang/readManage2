@@ -4,12 +4,12 @@ const menuRouter = {
     redirect: { path: '/home/welcome' },
     children: [
         {
-            path: 'setting',
-            component: () => import('../components/views/setting.vue')
-        },
-        {
             path: 'welcome',
             component: () => import('../components/views/welcome.vue'),
+        },
+        {
+            path: 'setting',
+            component: () => import('../components/views/setting.vue')
         },
         {
             path: 'userList',
@@ -56,8 +56,25 @@ const menuRouter = {
             component: () => import('../components/views/proxyDetail.vue')
         },
         {
+            path: 'packageManage',
+            component: () => import("../components/views/packageManage.vue")
+        },
+        {
+            path: 'subData',
+            component: () => import("../components/views/subData.vue")
+        },
+        {
+            path: 'samePackage',
+            component: () => import("../components/views/samePackage.vue")
+        },
+        //代理
+        {
             path: "userListProxy",
             component: () => import("../components/views/proxyFile/userListProxy.vue")
+        },
+        {
+            path: 'monthListProxy',
+            component: () => import("../components/views/proxyFile/monthListProxy.vue")
         },
         {
             path: "proxyDeviceList",
@@ -67,15 +84,6 @@ const menuRouter = {
             path: "proxyInfo",
             component: () => import("../components/views/proxyFile/proxyInfo.vue")
         },
-        {
-            path: 'packageManage',
-            component: () => import("../components/views/packageManage.vue")
-        },
-        {
-            path: 'subData',
-            component: () => import("../components/views/subData.vue")
-        }
-
     ]
 
 }

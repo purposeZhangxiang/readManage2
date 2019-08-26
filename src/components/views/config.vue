@@ -6,7 +6,7 @@
     <el-form :inline="true" class="operate">
       <el-form-item>
         <el-button type="primary" @click="add">新增阅读配置</el-button>
-        <el-button type="primary" @click="handlePackage">云更新配置管理</el-button>
+        <el-button type="primary" @click="cloudUpdate">云更新配置管理</el-button>
       </el-form-item>
     </el-form>
     <!-- 表格 -->
@@ -14,19 +14,18 @@
       ref="multipleTable"
       :data="tableData"
       tooltip-effect="dark"
-      style="width: 100%"
       @selection-change="handleSelectionChange"
     >
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-      <el-table-column prop="name" label="阅读软件" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="categery" label="分类" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="schema1" label="阅读方案一" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="schema2" label="阅读方案二" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="favor" label="是否推荐" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="ondDayReadAmount" label="每天最大阅读量" min-width="100" width="200"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column prop="name" label="阅读软件"></el-table-column>
+      <el-table-column prop="categery" label="分类"></el-table-column>
+      <el-table-column prop="schema1" label="阅读方案一"></el-table-column>
+      <el-table-column prop="schema2" label="阅读方案二"></el-table-column>
+      <el-table-column prop="favor" label="是否推荐"></el-table-column>
+      <el-table-column prop="ondDayReadAmount" label="每天最大阅读量"></el-table-column>
+      <el-table-column label="操作" width="340px">
         <template slot-scope="scope">
-          <!-- <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">进入包配置</el-button> -->
+          <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">包配置</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改阅读配置</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除配置</el-button>
         </template>
@@ -150,15 +149,24 @@ export default {
     getConfig() {
       http("/user/infoList", "post").then(res => {
         this.tableData = res;
+        for(let val of res){
+          console.log(val.packageName)
+        }
       });
     },
     add() {
       this.dialogFormVisible = !this.dialogFormVisible;
       this.dialogTitle = "新增配置";
     },
-    handlePackage() {
+    cloudUpdate() {
       this.$router.push({
         path: "/home/packageManage"
+      });
+    },
+    handlePackage(index, row) {
+      this.$router.push({
+        path: "/home/samePackage",
+        query: { packageName: row.packageName }
       });
     },
     handleEdit(idnex, row) {
