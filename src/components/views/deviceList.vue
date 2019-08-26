@@ -45,7 +45,7 @@
     </el-table>
     <!-- 分页 -->
     <div class="page">
-      <el-pagination
+      <!-- <el-pagination
         background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -53,7 +53,7 @@
         :page-size="10"
         layout="prev, pager, next, jumper"
         :total="total"
-      ></el-pagination>
+      ></el-pagination>-->
     </div>
     <!-- 模态框 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
@@ -132,12 +132,10 @@ export default {
       this.multipleSelection = val;
     },
     handleSizeChange(val) {},
-    handleCurrentChange(val) {
-      this.getDeviceList(val);
-    },
+    handleCurrentChange(val) {},
     getDeviceList() {
       http("/manager/deviceList", "post", this.$route.query).then(res => {
-        // debugger;
+        debugger;
         this.tableData = res;
         this.total = res.length;
       });

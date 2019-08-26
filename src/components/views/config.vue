@@ -10,13 +10,7 @@
       </el-form-item>
     </el-form>
     <!-- 表格 -->
-    <el-table
-      ref="multipleTable"
-      :data="tableData"
-      tooltip-effect="dark"
-      @selection-change="handleSelectionChange"
-    >
-      <!-- <el-table-column type="selection" width="55"></el-table-column> -->
+    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" class="table">
       <el-table-column prop="name" label="阅读软件"></el-table-column>
       <el-table-column prop="categery" label="分类"></el-table-column>
       <el-table-column prop="schema1" label="阅读方案一"></el-table-column>
@@ -25,7 +19,7 @@
       <el-table-column prop="ondDayReadAmount" label="每天最大阅读量"></el-table-column>
       <el-table-column label="操作" width="340px">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">包配置</el-button>
+          <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">动作配置</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改阅读配置</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除配置</el-button>
         </template>
@@ -145,13 +139,9 @@ export default {
     this.getConfig();
   },
   methods: {
-    handleSelectionChange() {},
     getConfig() {
       http("/user/infoList", "post").then(res => {
         this.tableData = res;
-        for(let val of res){
-          console.log(val.packageName)
-        }
       });
     },
     add() {
@@ -250,9 +240,12 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .operate {
   margin-top: 10px;
+}
+.el-table {
+  width: 99.9% !important;
 }
 </style>
 

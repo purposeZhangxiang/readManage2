@@ -5,7 +5,7 @@
     <!-- 操作栏 -->
     <el-form :inline="true" :model="formInline" class="operate">
       <el-form-item label>
-        <el-input v-model="formInline.content" placeholder="企业名称搜索"></el-input>
+        <el-input v-model="formInline.content" placeholder="企业名称搜索" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查询</el-button>
@@ -17,15 +17,21 @@
       ref="multipleTable"
       :data="tableData"
       tooltip-effect="dark"
-      style="width: 100%"
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="account" label="账号" min-width="100" width="200"></el-table-column>
+      <el-table-column
+        v-for="(item,index) in thead"
+        :key="index"
+        :label="item.label"
+        :prop="item.prop"
+      ></el-table-column>
+      <!-- <el-table-column prop="account" label="账号" min-width="100" width="200"></el-table-column>
       <el-table-column prop="realName" label="联系人名称" min-width="100" width="200"></el-table-column>
       <el-table-column prop="phone" label="联系方式" min-width="100" width="200"></el-table-column>
       <el-table-column prop="comName" label="企业名称" min-width="100" width="200"></el-table-column>
       <el-table-column prop="deviceSize" label="设备数量" min-width="100" width="200"></el-table-column>
+      <el-table-column prop="operator" label="操作者" min-width="100" width="200"></el-table-column>-->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleUpdate(scope.$index, scope.row)">更新基础信息</el-button>
@@ -41,8 +47,9 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="10"
-        layout="prev, pager, next, jumper"
+        :page-sizes="[10, 15, 20]"
+        :page-size="pageSize"
+        layout="total, sizes,prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
     </div>
@@ -109,8 +116,17 @@ export default {
         content: ""
       },
       multipleSelection: [],
+      thead: [
+        { label: "账号", prop: "account" },
+        { label: "联系人名称", prop: "realName" },
+        { label: "联系方式", prop: "phone" },
+        { label: "企业名称", prop: "comName" },
+        { label: "设备数量", prop: "deviceSize" },
+        { label: "操作者", prop: "operator" }
+      ],
       tableData: [],
       currentPage: 1,
+      pageSize: 10,
       total: 0,
       dialogFormVisible: false,
       dialogForm: {
@@ -137,10 +153,11 @@ export default {
      * @method {handleCurrentChange}
      *
      */
-    
+
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
+    handleUpdate(index, row) {},
     handleObserveble(index, row) {
       this.$router.push({
         path: "/home/deviceList",
@@ -159,9 +176,14 @@ export default {
         });
       });
     },
-    handleSizeChange(val) {},
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.currentPage = 1;
+      this.getUserList();
+    },
     handleCurrentChange(val) {
-      this.getUserList(val);
+      this.currentPage = val;
+      this.getUserList();
     },
     dialogClose() {
       this.claerForm();
@@ -171,18 +193,19 @@ export default {
         this.dialogForm[index] = "";
       }
     },
-    getUserList(currentPage = 1, comName = "") {
+    getUserList(comName = "") {
       http("/manager/userList", "get", {
-        page: currentPage,
-        pageSize: 10,
+        page: this.currentPage,
+        pageSize: this.pageSize,
         comName
       }).then(res => {
+        debugger;
         this.tableData = res.list;
         this.total = res.total;
       });
     },
     search() {
-      this.getUserList(1, this.formInline.content);
+      this.getUserList(this.formInline.content);
     },
     add() {
       this.dialogFormVisible = !this.dialogFormVisible;
@@ -232,6 +255,9 @@ export default {
   justify-content: flex-end;
   align-items: center;
   border-bottom: 1px solid #ccc;
+}
+.el-table {
+  width: 99.9% !important;
 }
 </style>
 

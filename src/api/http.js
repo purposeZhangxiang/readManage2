@@ -97,7 +97,7 @@ const sendRequest = (apiName, method = "get", data = {}, responseType = "json", 
             })
             .catch(err => {
                 //错误提示
-                Message.error("请求失败");
+                Message.error(err.message);
                 reject(err)
             })
 

@@ -160,18 +160,14 @@ export default {
         if (this.proxyTitle == "扩容数量") {
           json["accountCodeSettingList[" + index + "].id"] = arr[index].id;
         }
-        if (arr[index].frootSize > 0) {
-          json["accountCodeSettingList[" + index + "].frootGnkg"] =
-            arr[index].frootGnkg;
-          json["accountCodeSettingList[" + index + "].frootSize"] =
-            arr[index].frootSize;
-        }
-        if (arr[index].rootSize > 0) {
-          json["accountCodeSettingList[" + index + "].rootGnkg"] =
-            arr[index].rootGnkg;
-          json["accountCodeSettingList[" + index + "].rootSize"] =
-            arr[index].rootSize;
-        }
+        json["accountCodeSettingList[" + index + "].frootGnkg"] =
+          arr[index].frootGnkg;
+        json["accountCodeSettingList[" + index + "].frootSize"] =
+          arr[index].frootSize;
+        json["accountCodeSettingList[" + index + "].rootGnkg"] =
+          arr[index].rootGnkg;
+        json["accountCodeSettingList[" + index + "].rootSize"] =
+          arr[index].rootSize;
       }
       return json;
     },
