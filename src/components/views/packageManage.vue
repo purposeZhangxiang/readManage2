@@ -16,7 +16,6 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-      <!-- <el-table-column type="selection" width="55"></el-table-column> -->
       <el-table-column prop="listName" label="listName" min-width="100" width="200"></el-table-column>
       <el-table-column prop="code" label="编码" min-width="100" width="200"></el-table-column>
       <el-table-column prop="remark" label="备注" min-width="100" width="200"></el-table-column>

@@ -45,7 +45,6 @@ export default {
 .route {
   overflow: auto;
   flex: 1;
-  // height: @heightM;
   padding: 20px;
   box-sizing: border-box;
 }
