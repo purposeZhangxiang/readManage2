@@ -148,6 +148,7 @@ export default {
      *
      */
     queryEx() {
+      // 查询剩余root和froot码
       http("/manager/fetchAgentLaveFunCode", "get", {
         rootType: "1"
       }).then(res => {
@@ -229,16 +230,6 @@ export default {
         }
       ];
       this.verfiy(cloneData, arr); //验证类型和数量
-      // this.createJson(cloneData, arr);
-      //删除多余字段
-      // delete cloneData.gnkg;
-      // delete cloneData.deviceSize;
-      // delete cloneData.rootStatus;
-      // http("/manager/createCom", "post", cloneData).then(res => {
-      //   this.$message.success("添加成功");
-      //   this.dialogFormVisible = !this.dialogFormVisible;
-      //   this.getUserList();
-      // });
     },
     //构建json数据
     createJson(json, arr) {

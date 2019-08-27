@@ -26,12 +26,6 @@
         :label="item.label"
         :prop="item.prop"
       ></el-table-column>
-      <!-- <el-table-column prop="account" label="账号" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="realName" label="联系人名称" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="phone" label="联系方式" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="comName" label="企业名称" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="deviceSize" label="设备数量" min-width="100" width="200"></el-table-column>
-      <el-table-column prop="operator" label="操作者" min-width="100" width="200"></el-table-column>-->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleUpdate(scope.$index, scope.row)">更新基础信息</el-button>

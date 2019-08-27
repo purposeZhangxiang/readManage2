@@ -11,13 +11,13 @@
     </el-form>
     <!-- 表格 -->
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" class="table">
-      <el-table-column prop="name" label="阅读软件"></el-table-column>
-      <el-table-column prop="categery" label="分类"></el-table-column>
-      <el-table-column prop="schema1" label="阅读方案一"></el-table-column>
-      <el-table-column prop="schema2" label="阅读方案二"></el-table-column>
-      <el-table-column prop="favor" label="是否推荐"></el-table-column>
-      <el-table-column prop="ondDayReadAmount" label="每天最大阅读量"></el-table-column>
-      <el-table-column label="操作" width="340px">
+      <el-table-column prop="name" label="阅读软件" width="200"></el-table-column>
+      <el-table-column prop="categery" label="分类" width="200"></el-table-column>
+      <el-table-column prop="schema1" label="阅读方案一" width="200"></el-table-column>
+      <el-table-column prop="schema2" label="阅读方案二" width="200"></el-table-column>
+      <el-table-column prop="favor" label="是否推荐" width="200"></el-table-column>
+      <el-table-column prop="ondDayReadAmount" label="每天最大阅读量" width="200"></el-table-column>
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">动作配置</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改阅读配置</el-button>
@@ -244,8 +244,6 @@ export default {
 .operate {
   margin-top: 10px;
 }
-.el-table {
-  width: 99.9% !important;
-}
+
 </style>
 

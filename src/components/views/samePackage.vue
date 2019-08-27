@@ -1,39 +1,7 @@
 <template>
   <div>
     <breadNav :nowLocation="nowLocation"></breadNav>
-    <!-- operatebar -->
-    <!-- <div class="operate">
-      <el-form :inline="true">
-        <el-form-item label="listName">
-          <el-select v-model="optionsId" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.id"
-              :label="item.listName"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="check">选择</el-button>
-        </el-form-item>
-      </el-form>
-    </div>-->
-    <!-- table -->
-    <!-- <el-table :data="tableData" style="width: 100%">
-      <el-table-column
-        v-for="(item,index) in thead"
-        :key="index"
-        :prop="item.prop"
-        :label="item.label"
-      ></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>-->
+    <h1>{{pageTitle}}</h1>
     <div>
       <div class="content" v-for="(item,index) in tableData" :key="index">
         <div class="root">
@@ -111,6 +79,7 @@ export default {
     return {
       nowLocation: ["包管理"],
       tableData: [],
+      pageTitle:'',
       dialogTitle: "",
       dialogFormVisible: false,
       addform: {
@@ -127,6 +96,7 @@ export default {
     };
   },
   created() {
+    this.pageTitle=this.$route.query.packageName
     this.getList();
   },
   methods: {
@@ -149,8 +119,8 @@ export default {
       this.dialogFormVisible = !this.dialogFormVisible;
       this.dialogTitle = "更新信息";
       let cloneRow = JSON.parse(JSON.stringify(row));
-      cloneRow.parentId = parentId;
-      Object.assign(this.form, cloneRow);
+      let pid = { parentId: parentId };
+      Object.assign(this.form, cloneRow, pid);
     },
     handleDelete(index, row) {
       this.$confirm("确认删除, 是否继续?", "提示", {
@@ -177,7 +147,7 @@ export default {
         });
     },
     dialogOk() {
-      if ((this.dialogTitle = "新增信息")) {
+      if (this.dialogTitle == "新增信息") {
         if (!this.valite(this.addform)) {
           return;
         }
@@ -187,8 +157,10 @@ export default {
           this.dialogFormVisible = !this.dialogFormVisible;
         });
       } else if (this.dialogTitle == "更新信息") {
-        http("/appParameters/updateParamsMsg", "post", this.form).then(res => {
-          debugger;
+        http("/appParameters/updateParamsMsg", "get", this.form).then(res => {
+          this.$message.success("更新成功");
+          this.getList();
+          this.dialogFormVisible = !this.dialogFormVisible;
         });
       }
     },
@@ -231,5 +203,9 @@ export default {
   .root-item {
     width: 160px;
   }
+}
+
+.el-table {
+  width: 99.9% !important;
 }
 </style>
