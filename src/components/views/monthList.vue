@@ -12,12 +12,6 @@
       </el-form-item>
       <el-form-item>
         <el-select v-model="rootState" placeholder="root状态">
-          <!-- <el-option
-            v-for="item in rootOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>-->
           <el-option label="root" value="1"></el-option>
           <el-option label="非root" value="2"></el-option>
         </el-select>
@@ -92,7 +86,7 @@
         <el-button type="primary" @click="exportSuc">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 生成季卡弹出层 -->
+    <!-- 生成月卡弹出层 -->
     <el-dialog title="生成月卡激活码" :visible.sync="monthVisible" width="40%">
       <el-form :model="seasonform">
         <el-form-item label="root状态" label-width="200">
@@ -270,7 +264,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .operate {
   margin-top: 10px;
 }

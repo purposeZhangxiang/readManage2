@@ -39,7 +39,7 @@
         layout="prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
-    </div> -->
+    </div>-->
   </div>
 </template>
 
@@ -105,7 +105,7 @@ export default {
     },
     exportExcel() {
       http("/file/exportDevice", "get", this.$route.query, "blob");
-    },
+    }
   }
 };
 </script>
