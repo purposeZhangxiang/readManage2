@@ -44,23 +44,23 @@
       ></el-pagination>
     </div>
     <!-- 弹出框 -->
-    <el-dialog :title="proxyTitle" :visible.sync="proxyDialog">
+    <el-dialog :title="proxyTitle" :visible.sync="proxyDialog" @close="handleClose">
       <!-- form 新增代理 -->
-      <el-form :model="proxyform" v-if="proxyTitle=='新增代理' ">
+      <el-form :model="proxyform" v-if="proxyTitle=='新增代理' " ref="ruleForm" :rules="rules">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="代理姓名" label-width="120px">
+            <el-form-item label="代理姓名" label-width="120px" prop="name">
               <el-input v-model="proxyform.name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="登陆账号" label-width="120px">
+            <el-form-item label="登陆账号" label-width="120px" prop="user">
               <el-input v-model="proxyform.user" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="联系方式" label-width="120px">
+            <el-form-item label="联系方式" label-width="120px" prop="phone">
               <el-input maxlength="11" v-model="proxyform.phone" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="登陆密码" label-width="120px">
+            <el-form-item label="登陆密码" label-width="120px" prop="password">
               <el-input v-model="proxyform.password" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
@@ -137,6 +137,16 @@
 <script>
 import { http } from "../../api/http";
 import globalFunc from "../../util/globalFunction";
+//reg
+const must = [{ required: true, message: "此为必填项", trigger: "blur" }];
+const phone = [
+  { required: true, message: "此为必填项", trigger: "blur" },
+  {
+    pattern: /0?(13|14|15|17|18|19)[0-9]{9}/,
+    message: "手机号格式不对",
+    trigger: "blur"
+  }
+];
 export default {
   components: {
     breadNav: () => import("../../components/common/bread.vue")
@@ -177,7 +187,13 @@ export default {
         user: "",
         password: ""
       },
-      gnOptions: [1, 2, 3, 4, 5, 6, 7, 8],
+      rules: {
+        name: must,
+        phone: phone,
+        user: must,
+        password: must
+      },
+      gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
   },
   created() {
@@ -254,15 +270,22 @@ export default {
     },
     proxySure() {
       if (this.proxyTitle === "新增代理") {
-        let cloneData = JSON.parse(JSON.stringify(this.proxyform));
-        let root_froot = cloneData.root_froot;
-        root_froot.frootGnkg = globalFunc.binary(root_froot.frootGnkg);
-        root_froot.rootGnkg = globalFunc.binary(root_froot.rootGnkg);
-        let arr = [root_froot];
-        this.createJson(cloneData, arr);
-        http("/manager/createAgentAdmin", "post", cloneData).then(res => {
-          this.$message.success("新增代理用户成功！");
-          this.getProxyList();
+        this.$refs.ruleForm.validate(valid => {
+          if (valid) {
+            let cloneData = JSON.parse(JSON.stringify(this.proxyform));
+            let root_froot = cloneData.root_froot;
+            root_froot.frootGnkg = globalFunc.binary(root_froot.frootGnkg);
+            root_froot.rootGnkg = globalFunc.binary(root_froot.rootGnkg);
+            let arr = [root_froot];
+            this.createJson(cloneData, arr);
+            http("/manager/createAgentAdmin", "post", cloneData).then(res => {
+              this.$message.success("新增代理用户成功！");
+              this.getProxyList();
+              this.proxyDialog = false;
+            });
+          } else {
+            return false;
+          }
         });
       } else if (this.proxyTitle === "编辑基础信息") {
         let cloneData = JSON.parse(JSON.stringify(this.proxyform3));
@@ -271,9 +294,9 @@ export default {
         http("/manager/agentAdminUpdate", "post", cloneData).then(res => {
           this.$message.success("修改成功");
           this.getProxyList();
+          this.proxyDialog = false;
         });
       }
-      this.proxyDialog = false;
     },
     // 构建json
     createJson(json, arr) {
@@ -289,6 +312,17 @@ export default {
       }
       delete json.root_froot;
       return json;
+    },
+    handleClose() {
+      this.claerForm();
+      this.$refs.ruleForm.resetFields();
+    },
+    claerForm() {
+      for (let index in this.proxyform) {
+        this.proxyform[index] = "";
+      }
+      // this.proxyform.root_froot.rootGnkg = [];
+      // this.proxyform.root_froot.frootGnkg = [];
     }
   }
 };

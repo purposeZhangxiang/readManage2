@@ -17,7 +17,6 @@
     <el-dialog title="更新版本" :visible.sync="dialogFormVisible">
       <el-form :model="dialogForm">
         <el-form-item label="版本信息" label-width="120px">
-          <!-- <el-input v-model="dialogForm.versionInfo" autocomplete="off"></el-input> -->
           <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="dialogForm.versionInfo"></el-input>
         </el-form-item>
         <el-form-item label="版本号" label-width="120px">

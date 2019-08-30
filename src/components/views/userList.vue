@@ -48,15 +48,21 @@
       ></el-pagination>
     </div>
     <!-- 模态框 -->
-    <el-dialog title="新增" :visible.sync="dialogFormVisible" @close="dialogClose">
-      <el-form :model="dialogForm">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogFormVisible"
+      @close="dialogClose"
+      :width="dialogWidth"
+    >
+      <!-- 新增 -->
+      <el-form :model="dialogForm" v-if="dialogTitle=='新增' " ref="ruleForm" :rules="rules">
         <el-row>
           <!-- left -->
           <el-col :span="12">
-            <el-form-item label="账号" label-width="120px">
+            <el-form-item label="账号" label-width="120px" prop="account">
               <el-input v-model="dialogForm.account" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="企业名称" label-width="120px">
+            <el-form-item label="企业名称" label-width="120px" prop="comName">
               <el-input v-model="dialogForm.comName" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
@@ -65,12 +71,11 @@
             <el-form-item label="联系人名称" label-width="120px">
               <el-input v-model="dialogForm.realName" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="联系方式" label-width="120px">
-              <el-input v-model="dialogForm.phone" autocomplete="off"></el-input>
+            <el-form-item label="联系方式" label-width="120px" prop="phone">
+              <el-input v-model="dialogForm.phone" autocomplete="off" maxlength="11"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-
         <el-row>
           <el-form-item label="root状态" label-width="120px">
             <el-select v-model="dialogForm.rootStatus" placeholder="非ROOT /ROOT">
@@ -88,6 +93,19 @@
           </el-form-item>
         </el-row>
       </el-form>
+
+      <!-- 更新 -->
+      <el-form :model="dialogFormUpdate" v-if="dialogTitle=='更新' " ref="ruleForm" :rules="rules">
+        <el-form-item label="企业名称" label-width="120px">
+          <el-input v-model="dialogFormUpdate.comName" autocomplete="off" prop="comName"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人名称" label-width="120px">
+          <el-input v-model="dialogFormUpdate.realName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式" label-width="120px">
+          <el-input v-model="dialogFormUpdate.phone" autocomplete="off" maxlength="11"></el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="ok()">确 定</el-button>
@@ -99,6 +117,16 @@
 <script>
 import { http } from "../../api/http";
 import globalFunc from "../../util/globalFunction";
+//reg
+const must = [{ required: true, message: "此为必填项", trigger: "blur" }];
+const phone = [
+  { required: true, message: "此为必填项", trigger: "blur" },
+  {
+    pattern: /0?(13|14|15|17|18|19)[0-9]{9}/,
+    message: "手机号格式不对",
+    trigger: "blur"
+  }
+];
 export default {
   components: {
     breadNav: () => import("../../components/common/bread.vue")
@@ -122,7 +150,9 @@ export default {
       currentPage: 1,
       pageSize: 10,
       total: 0,
+      dialogTitle: "",
       dialogFormVisible: false,
+      dialogWidth: "",
       dialogForm: {
         account: "",
         realName: "",
@@ -131,6 +161,16 @@ export default {
         deviceSize: "",
         rootStatus: "1",
         gnkg: []
+      },
+      dialogFormUpdate: {
+        comName: "",
+        realName: "",
+        phone: ""
+      },
+      rules: {
+        account: must,
+        phone: phone,
+        comName: must
       },
       gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
@@ -151,7 +191,11 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    handleUpdate(index, row) {},
+    handleUpdate(index, row) {
+      this.dialogTitle = "更新";
+      this.dialogWidth = "30%";
+      this.dialogFormVisible = !this.dialogFormVisible;
+    },
     handleObserveble(index, row) {
       this.$router.push({
         path: "/home/deviceList",
@@ -181,11 +225,13 @@ export default {
     },
     dialogClose() {
       this.claerForm();
+      this.$refs.ruleForm.resetFields();
     },
     claerForm() {
       for (let index in this.dialogForm) {
         this.dialogForm[index] = "";
       }
+      this.dialogForm.gnkg = [];
     },
     getUserList(comName = "") {
       http("/manager/userList", "get", {
@@ -193,7 +239,6 @@ export default {
         pageSize: this.pageSize,
         comName
       }).then(res => {
-        debugger;
         this.tableData = res.list;
         this.total = res.total;
       });
@@ -202,28 +247,38 @@ export default {
       this.getUserList(this.formInline.content);
     },
     add() {
+      this.dialogTitle = "新增";
+      this.dialogWidth = "50%";
       this.dialogFormVisible = !this.dialogFormVisible;
     },
     ok() {
-      let cloneData = JSON.parse(JSON.stringify(this.dialogForm));
-      //验证表单数据必填项目
-      let arr = [
-        {
-          gnkg: globalFunc.binary(cloneData.gnkg),
-          size: cloneData.deviceSize,
-          type: cloneData.rootStatus
-        }
-      ];
-      this.createJson(cloneData, arr);
-      //删除多余字段
-      delete cloneData.gnkg;
-      delete cloneData.deviceSize;
-      delete cloneData.rootStatus;
-      http("/manager/createCom", "post", cloneData).then(res => {
-        this.$message.success("添加成功");
-        this.dialogFormVisible = !this.dialogFormVisible;
-        this.getUserList();
-      });
+      if (this.dialogTitle == "新增") {
+        this.$refs.ruleForm.validate(valid => {
+          if (valid) {
+            let cloneData = JSON.parse(JSON.stringify(this.dialogForm));
+            let arr = [
+              {
+                gnkg: globalFunc.binary(cloneData.gnkg),
+                size: cloneData.deviceSize,
+                type: cloneData.rootStatus
+              }
+            ];
+            this.createJson(cloneData, arr);
+            //删除多余字段
+            delete cloneData.gnkg;
+            delete cloneData.deviceSize;
+            delete cloneData.rootStatus;
+            http("/manager/createCom", "post", cloneData).then(res => {
+              this.$message.success("添加成功");
+              this.dialogFormVisible = !this.dialogFormVisible;
+              this.getUserList();
+            });
+          } else {
+            return false;
+          }
+        });
+      } else if (this.dialogTitle == "更新") {
+      }
     },
     createJson(json, arr) {
       for (let index in arr) {
