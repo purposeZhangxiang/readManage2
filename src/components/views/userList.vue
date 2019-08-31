@@ -96,13 +96,13 @@
 
       <!-- 更新 -->
       <el-form :model="dialogFormUpdate" v-if="dialogTitle=='更新' " ref="ruleForm" :rules="rules">
-        <el-form-item label="企业名称" label-width="120px">
-          <el-input v-model="dialogFormUpdate.comName" autocomplete="off" prop="comName"></el-input>
+        <el-form-item label="企业名称" label-width="120px" prop="comName">
+          <el-input v-model="dialogFormUpdate.comName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="联系人名称" label-width="120px">
+        <el-form-item label="联系人名称" label-width="120px" prop="realName">
           <el-input v-model="dialogFormUpdate.realName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="联系方式" label-width="120px">
+        <el-form-item label="联系方式" label-width="120px" prop="phone">
           <el-input v-model="dialogFormUpdate.phone" autocomplete="off" maxlength="11"></el-input>
         </el-form-item>
       </el-form>
@@ -170,7 +170,8 @@ export default {
       rules: {
         account: must,
         phone: phone,
-        comName: must
+        comName: must,
+        realName: must
       },
       gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
@@ -194,6 +195,12 @@ export default {
     handleUpdate(index, row) {
       this.dialogTitle = "更新";
       this.dialogWidth = "30%";
+      let json = {
+        comName: row.comName,
+        realName: row.realName,
+        phone: row.phone
+      };
+      Object.assign(this.dialogFormUpdate, json);
       this.dialogFormVisible = !this.dialogFormVisible;
     },
     handleObserveble(index, row) {
@@ -278,6 +285,15 @@ export default {
           }
         });
       } else if (this.dialogTitle == "更新") {
+        this.$refs.ruleForm.validate(valid=>{
+          if(valid){
+            http("/manager/updateCom","post",this.dialogFormUpdate).then(res=>{
+              this.$message.success("更新基础信息成功");
+            })
+          }else{
+            return false
+          }
+        })
       }
     },
     createJson(json, arr) {

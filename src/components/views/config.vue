@@ -57,6 +57,12 @@
           <el-form-item label="主页刷新频率" label-width="140px">
             <el-input type="number" v-model="dialogForm.handleHomePageRefreashRate"></el-input>
           </el-form-item>
+          <el-form-item label="versionName" label-width="140px">
+            <el-input v-model="dialogForm.versionName"></el-input>
+          </el-form-item>
+          <el-form-item label="syncUrl" label-width="140px">
+            <el-input v-model="dialogForm.syncUrl"></el-input>
+          </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="每日最大阅读量" label-width="140px">
@@ -79,6 +85,12 @@
           </el-form-item>
           <el-form-item label="领取阅读奖励频率" label-width="140px">
             <el-input v-model="dialogForm.handleReadWardRate"></el-input>
+          </el-form-item>
+          <el-form-item label="takeCashInterval" label-width="140px">
+            <el-input v-model="dialogForm.takeCashInterval"></el-input>
+          </el-form-item>
+          <el-form-item label="inventCode" label-width="140px">
+            <el-input v-model="dialogForm.inventCode"></el-input>
           </el-form-item>
         </el-col>
       </el-form>
@@ -116,7 +128,12 @@ export default {
         minSwipeInterval: 2,
         maxSwipeInterval: 5,
         packageName: "",
-        handleReadWardRate: 0
+        handleReadWardRate: 0,
+        //add8-30
+        versionName: "",
+        syncUrl: "",
+        takeCashInterval: "",
+        inventCode: ""
       },
       //分类options
       kindOptions: [
@@ -244,6 +261,5 @@ export default {
 .operate {
   margin-top: 10px;
 }
-
 </style>
 
