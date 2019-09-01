@@ -15,13 +15,12 @@ export default {
                 rootType: "1"
             }).then(res => {
                 this.globalRoot = res;
-
             });
             http("/manager/fetchAgentLaveFunCode", "get", {
                 rootType: "2"
             }).then(res => {
                 this.globalFroot = res;
-                
+
             });
         }
     }

@@ -136,6 +136,7 @@ export default {
     },
     validate(data) {
       let errInfo = "";
+      let passValidate = false;
       if (data.rootType == "1") {
         if (this.globalRoot.length == 0) {
           this.$message.warning("你已使用完此类功能码或者你未购买此类码");
@@ -149,10 +150,13 @@ export default {
               //pass num
               data.settingId = ele.settingId;
               this.passValidate(data);
+              passValidate = true;
             } else {
               errInfo = "你输入的数量大于剩余数";
               this.errInfo(errInfo);
             }
+          } else {
+            errInfo = "你未购买此类码";
           }
         });
       } else if (data.rootType == "2") {
@@ -167,12 +171,20 @@ export default {
               //pass num
               data.settingId = ele.settingId;
               this.passValidate(data);
+              passValidate = true;
             } else {
               errInfo = "你输入的数量大于剩余数";
               this.errInfo(errInfo);
             }
+          } else {
+            errInfo = "你未购买此类码";
           }
         });
+      }
+
+      //遍历完没找到此类码 未通过验证
+      if (!passValidate && errInfo) {
+        this.errInfo(errInfo);
       }
     },
     passValidate(data) {

@@ -100,9 +100,11 @@
 </template>
 
 <script>
+import proxyQuery from "../../../util/proxy";
 import { http } from "../../../api/http";
 import globalFunc from "../../../util/globalFunction";
 export default {
+  mixins: [proxyQuery],
   components: {
     breadNav: () => import("../../../components/common/bread.vue")
   },
@@ -135,8 +137,9 @@ export default {
     };
   },
   mounted() {
+    console.log(this.globalRoot);
+    console.log(this.globalFroot);
     this.getUserList();
-    this.queryEx();
   },
   methods: {
     /**
@@ -147,29 +150,6 @@ export default {
      * @method {handleCurrentChange}
      *
      */
-    queryEx() {
-      // 查询剩余root和froot码
-      http("/manager/fetchAgentLaveFunCode", "get", {
-        rootType: "1"
-      }).then(res => {
-        this.rootRemain = res;
-        let sum = 0;
-        for (let val of res) {
-          sum += val.codeData.total;
-        }
-        this.rootTotalNum = sum;
-      });
-      http("/manager/fetchAgentLaveFunCode", "get", {
-        rootType: "2"
-      }).then(res => {
-        this.frootRemain = res;
-        let sum = 0;
-        for (let val of res) {
-          sum += val.codeData.total;
-        }
-        this.frootTotalNum = sum;
-      });
-    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
@@ -200,7 +180,11 @@ export default {
     },
     claerForm() {
       for (let index in this.dialogForm) {
-        this.dialogForm[index] = "";
+        if (index == "gnkg") {
+          this.dialogForm[index] = [];
+        } else {
+          this.dialogForm[index] = "";
+        }
       }
     },
     getUserList(currentPage = 1, comName = "") {
@@ -221,66 +205,96 @@ export default {
     },
     ok() {
       let cloneData = JSON.parse(JSON.stringify(this.dialogForm));
-      //验证表单数据必填项目
-      let arr = [
-        {
-          gnkg: globalFunc.binary(cloneData.gnkg),
-          size: cloneData.deviceSize,
-          type: cloneData.rootStatus
-        }
-      ];
-      this.verfiy(cloneData, arr); //验证类型和数量
+      cloneData.gnkg = globalFunc.binary(cloneData.gnkg);
+      // console.log(cloneData);
+      this.validate(cloneData);
     },
     //构建json数据
     createJson(json, arr) {
       //代理必要的参数settingId
       for (let index in arr) {
-        json["root[" + index + "].size"] = arr[index].size;
-        json["root[" + index + "].type"] = arr[index].type;
+        json["root[" + index + "].size"] = arr[index].deviceSize;
+        json["root[" + index + "].type"] = arr[index].rootStatus;
         json["root[" + index + "].gnkg"] = arr[index].gnkg;
         json["root[" + index + "].settingId"] = arr[index].settingId;
       }
-      // console.log(json);
-      // return json;
-      this.createdCompany(json);
+      delete json.gnkg;
+      delete json.deviceSize;
+      delete json.rootStatus;
+      delete json.settingId;
+
+      return json;
+      // this.createdCompany(json);
     },
     createdCompany(options) {
-      http("/manager/createCom", "post", options).then(res => {
+      // http("/manager/createCom", "post", options).then(res => {
+      //   this.$message.success("添加成功");
+      //   this.dialogFormVisible = !this.dialogFormVisible;
+      //   this.getUserList();
+      // });
+    },
+    validate(data) {
+      let errInfo = "";
+      let passValidate = false;
+      if (data.rootStatus == "1") {
+        if (this.globalRoot.length == 0) {
+          this.$message.warning("你已使用完此类功能码或者你未购买此类码");
+          return;
+        }
+        //valid gn & num
+        this.globalRoot.forEach(ele => {
+          if (ele.codeData.gnkg == data.gnkg) {
+            //pass gn then valid num
+            if (ele.codeData.remain >= data.deviceSize) {
+              //pass num
+              debugger;
+              data.settingId = ele.settingId;
+              this.passValidate(data);
+              passValidate = true;
+            } else {
+              errInfo = "你输入的数量大于剩余数";
+              this.errInfo(errInfo);
+            }
+          } else {
+            errInfo = "你未购买此类码";
+          }
+        });
+      } else if (data.rootStatus == "2") {
+        if (this.globalFroot.length == 0) {
+          this.$message.warning("你已使用完此类功能码或者你未购买此类码");
+          return;
+        }
+        this.globalFroot.forEach(ele => {
+          if (ele.codeData.gnkg == data.gnkg) {
+            //pass gn then valid num
+            if (ele.codeData.remain >= data.deviceSize) {
+              //pass num
+              data.settingId = ele.settingId;
+              this.passValidate(data);
+              passValidate = true;
+            } else {
+              errInfo = "你输入的数量大于剩余数";
+              this.errInfo(errInfo);
+            }
+          }
+        });
+      }
+
+      //遍历完没找到此类码 未通过验证
+      if (!passValidate && errInfo) {
+        this.errInfo(errInfo);
+      }
+    },
+    passValidate(data) {
+      let obj = this.createJson(data, [data]);
+      http("/manager/createCom", "post", obj).then(res => {
         this.$message.success("添加成功");
         this.dialogFormVisible = !this.dialogFormVisible;
         this.getUserList();
       });
     },
-    //前端验证
-    verfiy(cloneData, options) {
-      for (let index in options) {
-        //root
-        if (options[index].type == "1") {
-          for (let val of this.rootRemain) {
-            if (
-              options[index].gnkg == val.codeData.gnkg &&
-              options[index].size <= val.codeData.remain
-            ) {
-              console.log("if");
-              options[index].settingId = val.settingId;
-              this.createJson(cloneData, options);
-              return;
-            }
-          }
-        } else if (options[index].type == "2") {
-          //froot
-          for (let val of this.frootRemain) {
-            if (
-              options[index].gnkg == val.codeData.gnkg &&
-              options[index].size <= val.codeData.remain
-            ) {
-              options[index].settingId = val.settingId;
-              this.createJson(cloneData, options);
-              return;
-            }
-          }
-        }
-      }
+    errInfo(err) {
+      this.$message.warning(err);
     }
   }
 };

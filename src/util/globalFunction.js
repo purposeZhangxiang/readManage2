@@ -7,7 +7,7 @@ export default {
         return arr.reverse().join("");
     },
     original(str) {
-        if(!str){
+        if (!str) {
             return;
         }
         let creatArr = str.split("").reverse();
