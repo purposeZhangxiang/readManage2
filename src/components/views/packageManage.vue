@@ -104,7 +104,6 @@ export default {
     },
     handleSelectionChange() {},
     handleSubData(index, row) {
-      debugger
       this.$router.push({
         path: "/home/subData",
         query: {

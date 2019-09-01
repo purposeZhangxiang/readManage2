@@ -185,7 +185,7 @@ export default {
       http("/manager/createDeviceMonth", "post", obj).then(res => {
         this.$message.success("操作成功");
         this.getProxyMonthList();
-        //重新获取剩余码
+        //重新获取剩余码 很关键
         this.getRemain();
       });
     },

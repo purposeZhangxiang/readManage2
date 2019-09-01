@@ -135,7 +135,6 @@ export default {
     handleCurrentChange(val) {},
     getDeviceList() {
       http("/manager/deviceList", "post", this.$route.query).then(res => {
-        debugger;
         this.tableData = res;
         this.total = res.length;
       });
@@ -191,7 +190,6 @@ export default {
         this.createJson(json, arr);
         console.log(json);
         http("/manager/createCom", "post", json).then(res => {
-          debugger;
         });
       } else if (this.dialogTitle == "更改设备码功能") {
         alert("更改");

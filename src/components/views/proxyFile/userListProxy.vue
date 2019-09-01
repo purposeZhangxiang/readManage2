@@ -265,8 +265,6 @@ export default {
               options[index].settingId = val.settingId;
               this.createJson(cloneData, options);
               return;
-            } else {
-              this.$message.warning("功能开关选项错误或者数量错误");
             }
           }
         } else if (options[index].type == "2") {
@@ -279,8 +277,6 @@ export default {
               options[index].settingId = val.settingId;
               this.createJson(cloneData, options);
               return;
-            } else {
-              this.$message.warning("功能开关选项错误或者数量错误");
             }
           }
         }

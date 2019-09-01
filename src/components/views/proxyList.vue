@@ -26,7 +26,6 @@
         <template slot-scope="scope">
           <el-button size="mini" @click="handleDetail(scope.$index, scope.row)">查看详情</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改基础信息</el-button>
-          <!-- <el-button size="mini" @click="handleExpansion(scope.$index, scope.row)">扩容</el-button> -->
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -109,7 +108,7 @@
       <el-form :model="proxyform2" v-if="proxyTitle=='扩容' ">
         <el-row>
           <el-form-item label="已购非root码" label-width="120px">
-            <el-input-number v-model="proxyform2.frootSize" :min="0" :max="500"></el-input-number>
+            <el-input-number v-model="proxyform2.frootSize" :min="1" :max="500"></el-input-number>
           </el-form-item>
           <el-form-item label="非root码功能" label-width="120px">
             <el-checkbox-group v-model="proxyform2.frootGnkg" size="middle">
@@ -117,7 +116,7 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="已购root码" label-width="120px">
-            <el-input-number v-model="proxyform2.rootSize" :min="0" :max="500"></el-input-number>
+            <el-input-number v-model="proxyform2.rootSize" :min="1" :max="500"></el-input-number>
           </el-form-item>
           <el-form-item label="root码功能" label-width="120px">
             <el-checkbox-group v-model="proxyform2.rootGnkg" size="middle">
@@ -137,6 +136,7 @@
 <script>
 import { http } from "../../api/http";
 import globalFunc from "../../util/globalFunction";
+import proxy from "../../util/proxy";
 //reg
 const must = [{ required: true, message: "此为必填项", trigger: "blur" }];
 const phone = [
@@ -318,11 +318,20 @@ export default {
       this.$refs.ruleForm.resetFields();
     },
     claerForm() {
+      // 新增框 清空
       for (let index in this.proxyform) {
         this.proxyform[index] = "";
+        if (index == "root_froot") {
+          this.proxyform[index] = {
+            frootGnkg: [],
+            frootSize: 0,
+            rootGnkg: [],
+            rootSize: 0
+          };
+        } else {
+          this.proxyform[index] = "";
+        }
       }
-      // this.proxyform.root_froot.rootGnkg = [];
-      // this.proxyform.root_froot.frootGnkg = [];
     }
   }
 };

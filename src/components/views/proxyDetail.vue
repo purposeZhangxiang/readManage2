@@ -155,7 +155,6 @@ export default {
     },
     createJson(json, arr) {
       // 两种类码都存在时 需要过滤size=0的情况
-      debugger;
       for (let index in arr) {
         if (this.proxyTitle == "扩容数量") {
           json["accountCodeSettingList[" + index + "].id"] = arr[index].id;
@@ -195,7 +194,6 @@ export default {
         let cloneData = JSON.parse(JSON.stringify(this.row));
         let arr = [Object.assign(cloneData, this.proxyformSize)];
         let obj = this.createJson(json, [cloneData]);
-        debugger;
         http("/manager/agentAdminUpdate", "post", obj).then(res => {
           this.$message.success("扩容成功");
           this.getDetail();
