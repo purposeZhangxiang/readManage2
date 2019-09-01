@@ -104,27 +104,6 @@
           </el-col>
         </el-row>
       </el-form>
-      <!-- form 扩容 -->
-      <el-form :model="proxyform2" v-if="proxyTitle=='扩容' ">
-        <el-row>
-          <el-form-item label="已购非root码" label-width="120px">
-            <el-input-number v-model="proxyform2.frootSize" :min="1" :max="500"></el-input-number>
-          </el-form-item>
-          <el-form-item label="非root码功能" label-width="120px">
-            <el-checkbox-group v-model="proxyform2.frootGnkg" size="middle">
-              <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
-            </el-checkbox-group>
-          </el-form-item>
-          <el-form-item label="已购root码" label-width="120px">
-            <el-input-number v-model="proxyform2.rootSize" :min="1" :max="500"></el-input-number>
-          </el-form-item>
-          <el-form-item label="root码功能" label-width="120px">
-            <el-checkbox-group v-model="proxyform2.rootGnkg" size="middle">
-              <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
-            </el-checkbox-group>
-          </el-form-item>
-        </el-row>
-      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="proxyDialog = false">取 消</el-button>
         <el-button type="primary" @click="proxySure">确 定</el-button>
@@ -172,13 +151,6 @@ export default {
           rootGnkg: [],
           rootSize: 0
         }
-      },
-      // proxyform2扩容专用
-      proxyform2: {
-        frootGnkg: [],
-        frootSize: 0,
-        rootGnkg: [],
-        rootSize: 0
       },
       // 基础信息修改专用
       proxyform3: {
@@ -248,13 +220,7 @@ export default {
     handleEdit(index, row) {
       this.proxyDialog = true;
       this.proxyTitle = "编辑基础信息";
-      // this.row_id = row.id;
       Object.assign(this.proxyform3, row);
-    },
-    handleExpansion(index, row) {
-      this.proxyDialog = true;
-      this.proxyTitle = "扩容";
-      this.row_id = row.id;
     },
     handleDelete(index, row) {
       this.$confirm("确认删除?", "提示", {
@@ -315,7 +281,9 @@ export default {
     },
     handleClose() {
       this.claerForm();
-      this.$refs.ruleForm.resetFields();
+      if (this.proxyTitle == "新增代理") {
+        this.$refs.ruleForm.resetFields();
+      }
     },
     claerForm() {
       // 新增框 清空
