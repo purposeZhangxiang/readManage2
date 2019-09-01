@@ -10,9 +10,6 @@
     <div class="table">
       <div>
         <el-table ref="multipleTable" :data="rootRemain" tooltip-effect="dark" border>
-          <!-- <el-table-column prop="codeData.total" label="总购买数"></el-table-column>
-          <el-table-column prop="codeData.remain" label="剩余数"></el-table-column>
-          <el-table-column prop="codeData.gnkg" label="功能开关"></el-table-column>-->
           <el-table-column label="ROOT" align="center">
             <el-table-column
               v-for="(item,index) in rootTb"

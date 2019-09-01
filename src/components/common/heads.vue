@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div id="logo" :class="iconClick? 'leftLocation':'centerLocation'">
-      <img src="../../assets/logo.png" alt="logo">
+      <img src="../../assets/logo.png" alt="logo" />
     </div>
     <div class="setting">
       <div class="setting-left">
@@ -12,8 +12,8 @@
       </div>
       <el-dropdown trigger="hover">
         <span class="el-dropdown-link userinfo-inner">
-          <img src="../../assets/img/logo.png">
-          <span style="color:#fff">你好,admin</span>
+          <img src="../../assets/img/logo.png" />
+          <span style="color:#fff">你好,{{username}}</span>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="setting">设置</el-dropdown-item>
@@ -29,8 +29,12 @@ export default {
   data() {
     return {
       iconLR: "iconfont icon-caidan iconSize",
-      iconClick: false
+      iconClick: false,
+      username: ""
     };
+  },
+  created() {
+    this.username = sessionStorage.getItem("username");
   },
   methods: {
     /**

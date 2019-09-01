@@ -285,15 +285,17 @@ export default {
           }
         });
       } else if (this.dialogTitle == "更新") {
-        this.$refs.ruleForm.validate(valid=>{
-          if(valid){
-            http("/manager/updateCom","post",this.dialogFormUpdate).then(res=>{
-              this.$message.success("更新基础信息成功");
-            })
-          }else{
-            return false
+        this.$refs.ruleForm.validate(valid => {
+          if (valid) {
+            http("/manager/updateCom", "post", this.dialogFormUpdate).then(
+              res => {
+                this.$message.success("更新基础信息成功");
+              }
+            );
+          } else {
+            return false;
           }
-        })
+        });
       }
     },
     createJson(json, arr) {

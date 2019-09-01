@@ -1,7 +1,7 @@
 <template>
   <div class="bg">
     <div class="header">
-      <h2>admin 你好 欢迎登录微星助手管理系统</h2>
+      <h2>{{username}} 你好 欢迎登录微星助手管理系统</h2>
     </div>
     <div class="section">
       <div class="total">
@@ -63,19 +63,20 @@ import { http } from "../../api/http";
 export default {
   data() {
     return {
-      total:{
-        proxyNum:"",
-        month:{
-          total:""
+      total: {
+        proxyNum: "",
+        month: {
+          total: ""
         },
-        season:{
-          total:""
+        season: {
+          total: ""
         }
       }
     };
   },
   created() {
     this.getTotal();
+    this.username = sessionStorage.getItem("username");
   },
   methods: {
     getTotal() {

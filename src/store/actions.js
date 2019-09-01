@@ -9,10 +9,12 @@ export default {
      */
     login(store, param) {
         login("/manager/login", "post", param).then(res => {
-            // store.commit("setNav",res.level)
-            console.log(res)
             sessionStorage.setItem("token", res.token);
             sessionStorage.setItem("level", res.level);
+            sessionStorage.setItem("username", res.user)
+            if (res.level == 2) {
+                sessionStorage.setItem("id", res.id)
+            }
             router.push("/home");
         });
     },

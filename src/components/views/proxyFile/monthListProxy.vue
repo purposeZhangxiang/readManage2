@@ -32,7 +32,7 @@
       :highlight-current-row="true"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="code" label="激活码" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="deviceNo" label="激活码" min-width="100" width="150"></el-table-column>
       <el-table-column prop="rootType" label="root状态" min-width="100" width="150"></el-table-column>
       <el-table-column prop="gnkg" label="功能开关" min-width="100" width="150"></el-table-column>
       <el-table-column
@@ -45,7 +45,7 @@
     </el-table>
 
     <!-- 弹出层 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="handelClose">
       <el-form :model="monthForm">
         <el-form-item label="root状态" label-width="200">
           <el-select v-model="monthForm.rootType" placeholder="非ROOT /ROOT">
@@ -71,7 +71,11 @@
 </template>
 
 <script>
+import proxy from "../../../util/proxy";
+import globalFunction from "../../../util/globalFunction";
+import { http } from "../../../api/http";
 export default {
+  mixins: [proxy],
   components: {
     breadNav: () => import("../../../components/common/bread.vue")
   },
@@ -92,17 +96,111 @@ export default {
       }
     };
   },
+  created() {
+    this.getProxyMonthList();
+  },
   methods: {
-    search() {},
-    exportExcel() {},
+    getProxyMonthList() {
+      http("/manager/deviceList", "post", {
+        comId: sessionStorage.getItem("id")
+      }).then(res => {
+        this.tableData = res;
+      });
+    },
+    search() {
+      http().then(res => {});
+    },
+    exportExcel() {
+      http().then(res => {});
+    },
     createCode() {
       this.dialogTitle = "生成月卡";
       this.dialogVisible = !this.dialogVisible;
     },
     createMonth() {
       if (this.dialogTitle == "生成月卡") {
-        console.log(this.monthForm)
+        let monthForm = JSON.parse(JSON.stringify(this.monthForm));
+        monthForm.gnkg = globalFunction.binary(monthForm.gnkg);
+        this.validate(monthForm);
+      } else {
       }
+    },
+    handelClose() {
+      for (let index in this.monthForm) {
+        if (index == "gnkg") {
+          this.monthForm[index] = [];
+        } else {
+          this.monthForm[index] == "";
+        }
+      }
+    },
+    validate(data) {
+      let errInfo = "";
+      if (data.rootType == "1") {
+        if (this.globalRoot.length == 0) {
+          this.$message.warning("你已使用完此类功能码或者你未购买此类码");
+          return;
+        }
+        //valid gn & num
+        this.globalRoot.forEach(ele => {
+          if (ele.codeData.gnkg == data.gnkg) {
+            //pass gn then valid num
+            if (ele.codeData.remain >= data.size) {
+              //pass num
+              data.settingId = ele.settingId;
+              this.passValidate(data);
+            } else {
+              errInfo = "你输入的数量大于剩余数";
+              this.errInfo(errInfo);
+            }
+          }
+        });
+      } else if (data.rootType == "2") {
+        if (this.globalFroot.length == 0) {
+          this.$message.warning("你已使用完此类功能码或者你未购买此类码");
+          return;
+        }
+        this.globalFroot.forEach(ele => {
+          if (ele.codeData.gnkg == data.gnkg) {
+            //pass gn then valid num
+            if (ele.codeData.remain >= data.size) {
+              //pass num
+              data.settingId = ele.settingId;
+              this.passValidate(data);
+            } else {
+              errInfo = "你输入的数量大于剩余数";
+              this.errInfo(errInfo);
+            }
+          }
+        });
+      }
+    },
+    passValidate(data) {
+      let obj = this.createJson(data, [data]);
+      delete obj.gnkg;
+      delete obj.rootType;
+      delete obj.settingId;
+      delete obj.size;
+      console.log(obj);
+      http("/manager/createDeviceMonth", "post", obj).then(res => {
+        this.$message.success("操作成功");
+        this.getProxyMonthList();
+        //重新获取剩余码
+        this.getRemain();
+      });
+    },
+    errInfo(err) {
+      this.$message.warning(err);
+    },
+    createJson(json, arr) {
+      //代理必要的参数settingId
+      for (let index in arr) {
+        json["root[" + index + "].size"] = arr[index].size;
+        json["root[" + index + "].type"] = arr[index].rootType;
+        json["root[" + index + "].gnkg"] = arr[index].gnkg;
+        json["root[" + index + "].settingId"] = arr[index].settingId;
+      }
+      return json;
     }
   }
 };
