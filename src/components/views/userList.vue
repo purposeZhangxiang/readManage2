@@ -196,6 +196,7 @@ export default {
       this.dialogTitle = "更新";
       this.dialogWidth = "30%";
       let json = {
+        account: row.account,
         comName: row.comName,
         realName: row.realName,
         phone: row.phone
@@ -289,7 +290,9 @@ export default {
           if (valid) {
             http("/manager/updateCom", "post", this.dialogFormUpdate).then(
               res => {
+                this.getUserList();
                 this.$message.success("更新基础信息成功");
+                this.dialogFormVisible = !this.dialogFormVisible;
               }
             );
           } else {

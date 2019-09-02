@@ -14,8 +14,8 @@
     </el-form>
     <p>
       代理用户您好,你当前剩余的root码剩余
-      <span class="color">{{rootTotalNum}}</span>个,非root码剩余
-      <span class="color">{{frootTotalNum}}</span>个,感谢您对微星科技的支持！
+      <span class="color">{{globalRootRemain}}</span>个,非root码剩余
+      <span class="color">{{globalFrootRemain}}</span>个,感谢您对微星科技的支持！
     </p>
     <!-- 表格 -->
     <el-table
@@ -113,9 +113,8 @@ export default {
       nowLocation: ["企业用户管理"],
       //代理剩余码查询
       rootRemain: "",
-      rootTotalNum: 0,
+
       frootRemain: "",
-      frootTotalNum: 0,
       formInline: {
         content: ""
       },
@@ -137,8 +136,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.globalRoot);
-    console.log(this.globalFroot);
     this.getUserList();
   },
   methods: {
@@ -224,14 +221,6 @@ export default {
       delete json.settingId;
 
       return json;
-      // this.createdCompany(json);
-    },
-    createdCompany(options) {
-      // http("/manager/createCom", "post", options).then(res => {
-      //   this.$message.success("添加成功");
-      //   this.dialogFormVisible = !this.dialogFormVisible;
-      //   this.getUserList();
-      // });
     },
     validate(data) {
       let errInfo = "";
@@ -247,7 +236,6 @@ export default {
             //pass gn then valid num
             if (ele.codeData.remain >= data.deviceSize) {
               //pass num
-              debugger;
               data.settingId = ele.settingId;
               this.passValidate(data);
               passValidate = true;
@@ -291,6 +279,7 @@ export default {
         this.$message.success("添加成功");
         this.dialogFormVisible = !this.dialogFormVisible;
         this.getUserList();
+        this.getRemain(); //刷新剩余
       });
     },
     errInfo(err) {

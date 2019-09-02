@@ -193,8 +193,8 @@ export default {
       delete obj.rootType;
       delete obj.settingId;
       delete obj.size;
-      console.log(obj);
       http("/manager/createDeviceMonth", "post", obj).then(res => {
+        this.dialogVisible = !this.dialogVisible;
         this.$message.success("操作成功");
         this.getProxyMonthList();
         //重新获取剩余码 很关键
