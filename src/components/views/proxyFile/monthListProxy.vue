@@ -108,10 +108,29 @@ export default {
       });
     },
     search() {
-      http().then(res => {});
+      if (!this.state && !this.rootState) {
+        this.$message.warning("请完善筛选条件");
+        return;
+      }
+      http("/manager/querydevice", "post", {
+        stauts: this.state,
+        rootType: this.rootState
+      }).then(res => {
+        // debugger;
+        this.tableData = res;
+      });
     },
     exportExcel() {
-      http().then(res => {});
+      http(
+        "/file/exportDevice",
+        "get",
+        {
+          comId: sessionStorage.getItem("id")
+        },
+        "blob"
+      ).then(res => {
+        this.$message.success("导出成功");
+      });
     },
     createCode() {
       this.dialogTitle = "生成月卡";
