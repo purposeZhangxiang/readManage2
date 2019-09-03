@@ -215,9 +215,8 @@ export default {
         type: "warning"
       }).then(() => {
         http("/manager/deleteDevice", "get", { id: row.deviceId }).then(res => {
-          debugger;
           this.$message.success("删除成功");
-          this.getUserList();
+          this.getDeviceList();
         });
       });
     }
