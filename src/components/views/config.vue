@@ -10,13 +10,19 @@
       </el-form-item>
     </el-form>
     <!-- 表格 -->
-    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" class="table">
-      <el-table-column prop="name" label="阅读软件" width="200"></el-table-column>
+    <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark">
+      <el-table-column
+        v-for="(item,index) in thead"
+        :key="index"
+        :label="item.label"
+        :prop="item.prop"
+      ></el-table-column>
+      <!-- <el-table-column prop="name" label="阅读软件" width="200"></el-table-column>
       <el-table-column prop="categery" label="分类" width="200"></el-table-column>
       <el-table-column prop="schema1" label="阅读方案一" width="200"></el-table-column>
       <el-table-column prop="schema2" label="阅读方案二" width="200"></el-table-column>
       <el-table-column prop="favor" label="是否推荐" width="200"></el-table-column>
-      <el-table-column prop="ondDayReadAmount" label="每天最大阅读量" width="200"></el-table-column>
+      <el-table-column prop="ondDayReadAmount" label="每天最大阅读量" width="200"></el-table-column>-->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">动作配置</el-button>
@@ -87,7 +93,7 @@
             <el-input v-model="dialogForm.handleReadWardRate"></el-input>
           </el-form-item>
           <el-form-item label="takeCashInterval" label-width="140px">
-            <el-input v-model="dialogForm.takeCashInterval"></el-input>
+            <el-input v-model="dialogForm.takeCashInteval"></el-input>
           </el-form-item>
           <el-form-item label="inventCode" label-width="140px">
             <el-input v-model="dialogForm.inventCode"></el-input>
@@ -111,6 +117,32 @@ export default {
   data() {
     return {
       nowLocation: ["配置管理"],
+      thead: [
+        {
+          label: "阅读软件",
+          prop: "name"
+        },
+        {
+          label: "分类",
+          prop: "categery"
+        },
+        {
+          label: "阅读方案一",
+          prop: "schema1"
+        },
+        {
+          label: "阅读方案二",
+          prop: "schema2"
+        },
+        {
+          label: "是否推荐",
+          prop: "favor"
+        },
+        {
+          label: "每天最大阅读量",
+          prop: "ondDayReadAmount"
+        }
+      ],
       tableData: [],
       dialogFormVisible: false,
       dialogTitle: "",
@@ -132,7 +164,7 @@ export default {
         //add8-30
         versionName: "",
         syncUrl: "",
-        takeCashInterval: "",
+        takeCashInteval: "",
         inventCode: ""
       },
       //分类options
@@ -237,6 +269,7 @@ export default {
         });
       } else {
         //编辑更新
+        debugger
         http("/manager/updateInfo", "post", this.dialogForm).then(res => {
           this.$message.success("更新配置成功");
           this.getConfig();
