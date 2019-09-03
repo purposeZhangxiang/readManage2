@@ -188,9 +188,7 @@ export default {
         ];
         let json = {};
         this.createJson(json, arr);
-        console.log(json);
-        http("/manager/createCom", "post", json).then(res => {
-        });
+        http("/manager/createCom", "post", json).then(res => {});
       } else if (this.dialogTitle == "更改设备码功能") {
         alert("更改");
       }
@@ -216,11 +214,11 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        alert("删除");
-        // http("/manager/delCom", "get", { comId: row.comId }).then(res => {
-        //   this.$message.success("删除成功");
-        //   this.getUserList();
-        // });
+        http("/manager/deleteDevice", "get", { id: row.deviceId }).then(res => {
+          debugger;
+          this.$message.success("删除成功");
+          this.getUserList();
+        });
       });
     }
   }

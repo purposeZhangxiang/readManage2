@@ -271,7 +271,6 @@ export default {
         });
       } else {
         //编辑更新
-        debugger;
         http("/manager/updateInfo", "post", this.dialogForm).then(res => {
           this.$message.success("更新配置成功");
           this.getConfig();

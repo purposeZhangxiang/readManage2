@@ -130,7 +130,6 @@ export default {
     },
     ok() {
       if (this.dialogTitle == "新增包配置") {
-        console.log(this.dialogForm);
         http("/appParameters/addParams", "get", this.dialogForm).then(res => {
           this.$message.success("新增包配置成功");
           this.getPackage();

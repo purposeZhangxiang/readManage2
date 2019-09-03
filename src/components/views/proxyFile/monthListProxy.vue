@@ -116,7 +116,6 @@ export default {
         stauts: this.state,
         rootType: this.rootState
       }).then(res => {
-        // debugger;
         this.tableData = res;
       });
     },
