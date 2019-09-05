@@ -203,7 +203,6 @@ export default {
     ok() {
       let cloneData = JSON.parse(JSON.stringify(this.dialogForm));
       cloneData.gnkg = globalFunc.binary(cloneData.gnkg);
-      // console.log(cloneData);
       this.validate(cloneData);
     },
     //构建json数据

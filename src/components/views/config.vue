@@ -263,13 +263,14 @@ export default {
       }
 
       if (this.dialogTitle == "新增配置") {
+        //add 删除多余参数
+        delete this.dialogForm.infoId;
         http("/manager/addInfo", "post", this.dialogForm).then(res => {
           this.$message.success("添加成功");
           this.getConfig();
         });
       } else {
         //编辑更新
-        debugger;
         http("/manager/updateInfo", "post", this.dialogForm).then(res => {
           this.$message.success("更新配置成功");
           this.getConfig();
