@@ -63,10 +63,10 @@
           <el-form-item label="主页刷新频率" label-width="140px">
             <el-input type="number" v-model="dialogForm.handleHomePageRefreashRate"></el-input>
           </el-form-item>
-          <el-form-item label="versionName" label-width="140px">
+          <el-form-item label="版本号" label-width="140px">
             <el-input v-model="dialogForm.versionName"></el-input>
           </el-form-item>
-          <el-form-item label="syncUrl" label-width="140px">
+          <el-form-item label="同步链接" label-width="140px">
             <el-input v-model="dialogForm.syncUrl"></el-input>
           </el-form-item>
         </el-col>
@@ -92,10 +92,10 @@
           <el-form-item label="领取阅读奖励频率" label-width="140px">
             <el-input v-model="dialogForm.handleReadWardRate"></el-input>
           </el-form-item>
-          <el-form-item label="takeCashInterval" label-width="140px">
-            <el-input v-model="dialogForm.takeCashInteval"></el-input>
+          <el-form-item label="提现间隔" label-width="140px">
+            <el-input type="number" v-model="dialogForm.takeCashInteval"></el-input>
           </el-form-item>
-          <el-form-item label="inventCode" label-width="140px">
+          <el-form-item label="邀请码" label-width="140px">
             <el-input v-model="dialogForm.inventCode"></el-input>
           </el-form-item>
         </el-col>
@@ -269,7 +269,7 @@ export default {
         });
       } else {
         //编辑更新
-        debugger
+        debugger;
         http("/manager/updateInfo", "post", this.dialogForm).then(res => {
           this.$message.success("更新配置成功");
           this.getConfig();
