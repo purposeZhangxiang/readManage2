@@ -5,7 +5,6 @@
     <div>
       <div class="content" v-for="(item,index) in tableData" :key="index">
         <div class="root">
-          <!-- <el-tag closable="root-item">参数{{index+1}}</el-tag> -->
           <div class="root-index">参数{{index+1}}</div>
           <div class="root-item">{{item.listName}}</div>
           <div class="root-item">{{item.code}}</div>
@@ -28,17 +27,24 @@
     <!-- dialog -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" width="40%">
       <!-- add -->
-      <el-form :model="addform" style="width:50%;" v-if="dialogTitle=='新增信息' ">
-        <el-form-item label="packageName" label-width="120px">
+      <el-form :model="addform" style="width:70%;" v-if="dialogTitle=='新增信息' ">
+        <el-form-item label="包名" label-width="120px">
           <el-input v-model="addform.packageName" readonly></el-input>
         </el-form-item>
-        <el-form-item label="message" label-width="120px">
-          <el-input v-model="addform.message"></el-input>
+        <el-form-item label="信息" label-width="120px">
+          <el-input
+            type="textarea"
+            placeholder="请输入内容"
+            v-model="addform.message"
+            maxlength="100"
+            rows="3"
+            show-word-limit
+          ></el-input>
         </el-form-item>
-        <el-form-item label="remark" label-width="120px">
+        <el-form-item label="备注" label-width="120px">
           <el-input v-model="addform.remark"></el-input>
         </el-form-item>
-        <el-form-item label="status" label-width="120px">
+        <el-form-item label="状态" label-width="120px">
           <el-select v-model="addform.status" placeholder="请选择" style="width:100%">
             <el-option label="不可用" value="0"></el-option>
             <el-option label="可用" value="1"></el-option>
@@ -79,14 +85,14 @@ export default {
     return {
       nowLocation: ["包管理"],
       tableData: [],
-      pageTitle:'',
+      pageTitle: "",
       dialogTitle: "",
       dialogFormVisible: false,
       addform: {
         packageName: this.$route.query.packageName,
         message: "",
-        remark: "",
-        status: ""
+        remark: "1",
+        status: "1"
       },
       form: {
         message: "",
@@ -96,7 +102,7 @@ export default {
     };
   },
   created() {
-    this.pageTitle=this.$route.query.packageName
+    this.pageTitle = this.$route.query.packageName;
     this.getList();
   },
   methods: {
