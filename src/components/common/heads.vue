@@ -13,7 +13,7 @@
       <el-dropdown trigger="hover">
         <span class="el-dropdown-link userinfo-inner">
           <img src="../../assets/img/logo.png" />
-          <span style="color:#fff">你好,{{username}}</span>
+          <span style="color:#fff;padding-left:10px">你好,{{username}}</span>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="setting">设置</el-dropdown-item>
