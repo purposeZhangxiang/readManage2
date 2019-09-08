@@ -17,17 +17,11 @@
         :label="item.label"
         :prop="item.prop"
       ></el-table-column>
-      <!-- <el-table-column prop="name" label="阅读软件" width="200"></el-table-column>
-      <el-table-column prop="categery" label="分类" width="200"></el-table-column>
-      <el-table-column prop="schema1" label="阅读方案一" width="200"></el-table-column>
-      <el-table-column prop="schema2" label="阅读方案二" width="200"></el-table-column>
-      <el-table-column prop="favor" label="是否推荐" width="200"></el-table-column>
-      <el-table-column prop="ondDayReadAmount" label="每天最大阅读量" width="200"></el-table-column>-->
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="280px">
         <template slot-scope="scope">
           <el-button size="mini" @click="handlePackage(scope.$index, scope.row)">动作配置</el-button>
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改阅读配置</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除配置</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

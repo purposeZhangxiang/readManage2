@@ -11,10 +11,10 @@
           <el-button type="primary" size="mini" @click="add(item.id)">新增一行</el-button>
         </div>
         <el-table v-if="item.msgList.length>0" :data="item.msgList" style="width: 100%" border>
-          <el-table-column label="包名" prop="packageName"></el-table-column>
+          <el-table-column label="包名" prop="packageName" width="150"></el-table-column>
           <el-table-column label="信息" prop="message"></el-table-column>
-          <el-table-column label="备注" prop="remark"></el-table-column>
-          <el-table-column label="状态" prop="status"></el-table-column>
+          <el-table-column label="备注" prop="remark" width="200"></el-table-column>
+          <el-table-column label="状态" prop="status" width="100"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini" @click="handleEdit(scope.$index, scope.row,item.id)">修改</el-button>
@@ -36,7 +36,7 @@
             type="textarea"
             placeholder="请输入内容"
             v-model="addform.message"
-            maxlength="100"
+            maxlength="150"
             rows="3"
             show-word-limit
           ></el-input>
@@ -52,14 +52,22 @@
         </el-form-item>
       </el-form>
       <!-- update -->
-      <el-form :model="form" style="width:50%;" v-if="dialogTitle=='更新信息' ">
-        <el-form-item label="message" label-width="120px">
-          <el-input v-model="form.message" autocomplete="off"></el-input>
+      <el-form :model="form" style="width:60%;" v-if="dialogTitle=='更新信息' ">
+        <el-form-item label="信息" label-width="120px">
+          <!-- <el-input v-model="form.message" autocomplete="off"></el-input> -->
+          <el-input
+            type="textarea"
+            placeholder="请输入内容"
+            v-model="form.message"
+            maxlength="150"
+            rows="3"
+            show-word-limit
+          ></el-input>
         </el-form-item>
-        <el-form-item label="remark" label-width="120px">
+        <el-form-item label="备注" label-width="120px">
           <el-input v-model="form.remark" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="status" label-width="120px">
+        <el-form-item label="状态" label-width="120px">
           <el-select v-model="form.status" placeholder="请选择" style="width:100%">
             <el-option label="不可用" value="0"></el-option>
             <el-option label="可用" value="1"></el-option>
