@@ -41,9 +41,11 @@ export default {
   },
   computed: {
     navgroup() {
-      if (sessionStorage.getItem("level") == 1) {
+      let levelkey = window.btoa("level");
+      let levelval = atob(sessionStorage.getItem(levelkey));
+      if (levelval == 1) {
         return mixin.data().navgroup;
-      } else {
+      } else if (levelval == 2) {
         return mixin.data().navgroup2;
       }
     }

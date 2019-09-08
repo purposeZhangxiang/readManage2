@@ -55,7 +55,7 @@ export default {
         account: [{ validator: checkAccount, trigger: "blur" }],
         password: [{ validator: validatePass, trigger: "blur" }]
       },
-      name: "阅读管理系统"
+      name: "微星阅读管理系统"
     };
   },
   created() {},
@@ -67,7 +67,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-           this.$store.dispatch("login",this.formObj);
+          this.$store.dispatch("login", this.formObj);
         } else {
           return false;
         }
@@ -92,19 +92,19 @@ export default {
     width: 400px;
     position: absolute;
     top: calc(50% - 123px);
-    left:calc(50% - 200px);
+    left: calc(50% - 200px);
   }
   .title {
     height: 60px;
     text-align: center;
     color: white;
   }
-  .company{
+  .company {
     width: 100%;
     text-align: center;
     position: absolute;
     bottom: 20px;
-     color: white;
+    color: white;
   }
 }
 

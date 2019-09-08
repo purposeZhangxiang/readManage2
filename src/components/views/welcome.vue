@@ -2,8 +2,9 @@
   <div class="bg">
     <div class="header">
       <h2>{{username}} 你好 欢迎登录微星助手管理系统</h2>
+      <h3>感谢你对微星科技的信任和支持 我们会做得更好</h3>
     </div>
-    <div class="section">
+    <div class="section" v-if="level==1">
       <div class="total">
         <p class="font">当前代理用户数</p>
         <p class="num">{{total.proxyNum?total.proxyNum:0}}</p>
@@ -55,6 +56,9 @@
         <p class="num">{{total.season.used?total.season.used:0}}</p>
       </div>
     </div>
+    <div v-else style="text-align:center">
+      <img src="../../assets/img/welcome.png" alt />
+    </div>
   </div>
 </template>
 
@@ -75,23 +79,31 @@ export default {
     };
   },
   created() {
+    this.getLevel();
     this.getTotal();
-    this.username = sessionStorage.getItem("username");
   },
   methods: {
     getTotal() {
       http("/statis/index", "get").then(res => {
         this.total = res;
       });
+    },
+    getLevel() {
+      let levelkey = window.btoa("level");
+      let levelval = atob(sessionStorage.getItem(levelkey));
+      this.username = sessionStorage.getItem("username");
+      this.level = levelval;
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-h2 {
+h2,
+h3 {
   text-align: center;
   color: black;
+  line-height: 30px;
 }
 
 .section {
