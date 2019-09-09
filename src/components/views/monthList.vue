@@ -36,6 +36,7 @@
       <el-table-column prop="code" label="激活码" min-width="100" width="150"></el-table-column>
       <el-table-column prop="rootType" label="root状态" min-width="100" width="150"></el-table-column>
       <el-table-column prop="gnkg" label="功能开关" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="activeTime" label="激活时间" min-width="100" width="150"></el-table-column>
       <el-table-column
         prop="expireTime"
         label="到期时间"
@@ -189,9 +190,12 @@ export default {
         rootType: this.rootState
       }).then(res => {
         for (let item of res.list) {
-          item.expireTime === null
-            ? (item.expireTime = "未激活")
-            : item.expireTime;
+          item.activeTime === null
+            ? (item.activeTime = "未激活")
+            : item.activeTime;
+          item.rootType == 1
+            ? (item.rootType = "root")
+            : (tem.rootType = "非root");
         }
         this.tableData = res.list;
         this.total = res.total;
