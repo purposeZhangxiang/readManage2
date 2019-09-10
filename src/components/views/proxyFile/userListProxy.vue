@@ -288,7 +288,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .operate {
   margin-top: 10px;
 }

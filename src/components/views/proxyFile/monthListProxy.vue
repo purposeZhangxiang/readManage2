@@ -22,7 +22,11 @@
         <el-button type="primary" @click="createCode">生成月卡</el-button>
       </el-form-item>
     </el-form>
-
+    <p>
+      代理用户您好,你当前剩余的root码剩余
+      <span class="color">{{globalRootRemain}}</span>个,非root码剩余
+      <span class="color">{{globalFrootRemain}}</span>个,感谢您对微星科技的支持！
+    </p>
     <!-- 表格 -->
     <el-table
       ref="multipleTable"
@@ -239,5 +243,9 @@ export default {
 <style lang="less" scoped>
 .operate {
   margin-top: 10px;
+}
+.color {
+  color: red;
+  font-size: 20px;
 }
 </style>
