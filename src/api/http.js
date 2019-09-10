@@ -110,17 +110,16 @@ const sendRequest = (apiName, method = "get", data = {}, responseType = "json", 
             return;
         }
         let url = window.URL.createObjectURL(new Blob([data]))
-        let link = document.createElement('a')
-        link.style.display = 'none'
+        let link = document.createElement('a');
+        link.style.display = 'none';
         link.href = url;
         if (type == "application/csv") {
-            link.setAttribute('download', 'excel.csv')
+            link.setAttribute('download', `code_${data.size}.csv`)
         } else if (type == "application/sql") {
             link.setAttribute('download', 'database.sql');
         }
         document.body.appendChild(link);
         link.click();
-        // link.setAttribute('download', 'excel.csv');
     }
 }
 

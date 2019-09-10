@@ -190,13 +190,14 @@ export default {
         state: this.state, //激活状态
         rootType: this.rootState
       }).then(res => {
+        debugger;
         for (let item of res.list) {
           item.activeTime === null
             ? (item.activeTime = "未激活")
             : item.activeTime;
           item.rootType == 1
             ? (item.rootType = "root")
-            : (tem.rootType = "非root");
+            : (item.rootType = "非root");
         }
         this.tableData = res.list;
         this.total = res.total;

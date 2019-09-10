@@ -135,6 +135,12 @@ export default {
     handleCurrentChange(val) {},
     getDeviceList() {
       http("/manager/deviceList", "post", this.$route.query).then(res => {
+        for (let val of res) {
+          val.rootType == 1
+            ? (val.rootType = "root")
+            : (val.rootType = "非root");
+          val.activeDate == null ? (val.activeDate = "未激活") : val.activeDate;
+        }
         this.tableData = res;
         this.total = res.length;
       });

@@ -195,7 +195,7 @@ export default {
             : item.activeTime;
           item.rootType == 1
             ? (item.rootType = "root")
-            : (tem.rootType = "非root");
+            : (item.rootType = "非root");
         }
         this.tableData = res.list;
         this.total = res.total;

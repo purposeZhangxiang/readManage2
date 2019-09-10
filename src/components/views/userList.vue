@@ -26,7 +26,7 @@
         :label="item.label"
         :prop="item.prop"
       ></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="280">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleUpdate(scope.$index, scope.row)">更新基础信息</el-button>
           <el-button size="mini" @click="handleObserveble(scope.$index, scope.row)">查看设备</el-button>

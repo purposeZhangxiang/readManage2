@@ -36,9 +36,10 @@
       :highlight-current-row="true"
     >
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="deviceNo" label="激活码" min-width="100" width="150"></el-table-column>
-      <el-table-column prop="rootType" label="root状态" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="code" label="激活码" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="type" label="root状态" min-width="100" width="150"></el-table-column>
       <el-table-column prop="gnkg" label="功能开关" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="activeTime" label="激活时间" min-width="100" width="150"></el-table-column>
       <el-table-column
         prop="expireTime"
         label="到期时间"
@@ -47,7 +48,18 @@
         show-overflow-tooltip
       ></el-table-column>
     </el-table>
-
+    <!-- 分页 -->
+    <div class="page">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 30]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+    </div>
     <!-- 弹出层 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="handelClose">
       <el-form :model="monthForm">
@@ -86,9 +98,13 @@ export default {
   data() {
     return {
       nowLocation: ["代理月卡列表"],
-      state: "",
-      rootState: "",
+      state: "0",
+      rootState: "1",
       tableData: [],
+      //page
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
       //dialog
       dialogTitle: "",
       dialogVisible: false,
@@ -105,10 +121,20 @@ export default {
   },
   methods: {
     getProxyMonthList() {
-      http("/manager/deviceList", "post", {
-        comId: sessionStorage.getItem("id")
+      http("/manager/agentMonthCodeList", "post", {
+        page: this.currentPage,
+        pageSize: this.pageSize,
+        stauts: this.state,
+        rootType: this.rootState
       }).then(res => {
-        this.tableData = res;
+        for (let item of res.list) {
+          item.activeTime === null
+            ? (item.activeTime = "未激活")
+            : item.activeTime;
+          item.type == 1 ? (item.type = "root") : (item.type = "非root");
+        }
+        this.tableData = res.list;
+        this.total = res.total;
       });
     },
     search() {
@@ -116,20 +142,13 @@ export default {
         this.$message.warning("请完善筛选条件");
         return;
       }
-      http("/manager/querydevice", "post", {
-        stauts: this.state,
-        rootType: this.rootState
-      }).then(res => {
-        this.tableData = res;
-      });
+      this.getProxyMonthList();
     },
     exportExcel() {
       http(
-        "/file/exportDevice",
+        "/file/exportCode",
         "get",
-        {
-          comId: sessionStorage.getItem("id")
-        },
+        { state: this.state, rootType: this.rootState },
         "blob"
       ).then(res => {
         this.$message.success("导出成功");
@@ -235,6 +254,15 @@ export default {
         json["root[" + index + "].settingId"] = arr[index].settingId;
       }
       return json;
+    },
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.currentPage = 1;
+      this.getProxyMonthList();
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.getProxyMonthList();
     }
   }
 };
@@ -243,6 +271,15 @@ export default {
 <style lang="less" scoped>
 .operate {
   margin-top: 10px;
+}
+.page {
+  margin-top: 10px;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
 }
 .color {
   color: red;
