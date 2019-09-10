@@ -44,7 +44,7 @@
         width="150"
         show-overflow-tooltip
       ></el-table-column>
-      <el-table-column prop label="操作者" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="operate" label="操作者" min-width="100" width="150"></el-table-column>
     </el-table>
     <!-- 分页 -->
     <div class="page">
