@@ -37,7 +37,7 @@
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="code" label="激活码" min-width="100" width="150"></el-table-column>
-      <el-table-column prop="type" label="root状态" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="rootType" label="root状态" min-width="100" width="150"></el-table-column>
       <el-table-column prop="gnkg" label="功能开关" min-width="100" width="150"></el-table-column>
       <el-table-column prop="activeTime" label="激活时间" min-width="100" width="150"></el-table-column>
       <el-table-column
@@ -131,7 +131,7 @@ export default {
           item.activeTime === null
             ? (item.activeTime = "未激活")
             : item.activeTime;
-          item.type == 1 ? (item.type = "root") : (item.type = "非root");
+          item.rootType == 1 ? (item.rootType = "root") : (item.rootType = "非root");
         }
         this.tableData = res.list;
         this.total = res.total;
