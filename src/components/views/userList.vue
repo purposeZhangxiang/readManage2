@@ -5,7 +5,7 @@
     <!-- 操作栏 -->
     <el-form :inline="true" :model="formInline" class="operate">
       <el-form-item label>
-        <el-input v-model="formInline.content" placeholder="企业名称搜索" clearable></el-input>
+        <el-input v-model="formInline.content" placeholder="企业名称/操作者" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查询</el-button>

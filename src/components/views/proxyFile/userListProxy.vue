@@ -52,23 +52,23 @@
     </div>
     <!-- 模态框 -->
     <el-dialog title="新增" :visible.sync="dialogFormVisible" @close="dialogClose">
-      <el-form :model="dialogForm">
+      <el-form :model="dialogForm" :rules="ruleForm" ref="ruleForm">
         <el-row>
           <!-- left -->
           <el-col :span="12">
-            <el-form-item label="账号" label-width="120px">
+            <el-form-item label="账号" label-width="120px" prop="account">
               <el-input v-model="dialogForm.account" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="企业名称" label-width="120px">
+            <el-form-item label="企业名称" label-width="120px" prop="comName">
               <el-input v-model="dialogForm.comName" autocomplete="off"></el-input>
             </el-form-item>
           </el-col>
           <!-- right -->
           <el-col :span="12">
-            <el-form-item label="联系人名称" label-width="120px">
+            <el-form-item label="联系人名称" label-width="120px" prop="realName">
               <el-input v-model="dialogForm.realName" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="联系方式" label-width="120px">
+            <el-form-item label="联系方式" label-width="120px" prop="phone">
               <el-input maxlength="11" v-model="dialogForm.phone"></el-input>
             </el-form-item>
           </el-col>
@@ -103,6 +103,8 @@
 import proxyQuery from "../../../util/proxy";
 import { http } from "../../../api/http";
 import globalFunc from "../../../util/globalFunction";
+
+const must = [{ required: true, message: "此为必填项", trigger: "blur" }];
 export default {
   mixins: [proxyQuery],
   components: {
@@ -131,6 +133,12 @@ export default {
         deviceSize: "",
         rootStatus: "1",
         gnkg: []
+      },
+      ruleForm: {
+        account: must,
+        realName: must,
+        phone: must,
+        comName: must
       },
       gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
     };
@@ -274,11 +282,17 @@ export default {
     },
     passValidate(data) {
       let obj = this.createJson(data, [data]);
-      http("/manager/createCom", "post", obj).then(res => {
-        this.$message.success("添加成功");
-        this.dialogFormVisible = !this.dialogFormVisible;
-        this.getUserList();
-        this.getRemain(); //刷新剩余
+      this.$refs.ruleForm.validate(valid => {
+        if (valid) {
+          http("/manager/createCom", "post", obj).then(res => {
+            this.$message.success("添加成功");
+            this.dialogFormVisible = !this.dialogFormVisible;
+            this.getUserList();
+            this.getRemain(); //刷新剩余
+          });
+        }else{
+          return;
+        }
       });
     },
     errInfo(err) {

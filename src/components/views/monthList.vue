@@ -17,6 +17,9 @@
         </el-select>
       </el-form-item>
       <el-form-item>
+        <el-input v-model="value" placeholder="操作者" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" @click="search">查看</el-button>
         <el-button type="primary" @click="exportExcel">导出</el-button>
         <el-button type="primary" @click="createCode">生成月卡</el-button>
@@ -127,6 +130,7 @@ export default {
       type: "1", //3-月卡
       state: "0", //el-optinos
       rootState: "1", //el-optinos
+      value: "",
       multipleSelection: [],
       tableData: [],
       currentPage: 1,
@@ -188,9 +192,9 @@ export default {
         pageSize: pageSize,
         type: this.type,
         state: this.state, //激活状态
-        rootType: this.rootState
+        rootType: this.rootState,
+        value: this.value
       }).then(res => {
-        debugger;
         for (let item of res.list) {
           item.activeTime === null
             ? (item.activeTime = "未激活")
