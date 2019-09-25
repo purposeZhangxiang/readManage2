@@ -246,7 +246,7 @@ export default {
           pageSize: this.pageSize,
           type: this.type,
           rootType: this.exportform.rootType,
-          state: this.state,
+          state: this.exportform.state,
           exportType: 3
         };
       } else {

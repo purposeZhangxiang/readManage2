@@ -290,7 +290,7 @@ export default {
             this.getUserList();
             this.getRemain(); //刷新剩余
           });
-        }else{
+        } else {
           return;
         }
       });
