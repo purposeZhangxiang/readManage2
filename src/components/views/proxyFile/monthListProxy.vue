@@ -25,7 +25,7 @@
     <p>
       代理用户您好,你当前剩余的root码剩余
       <span class="color">{{globalRootRemain}}</span>个,非root码剩余
-      <span class="color">{{globalFrootRemain}}</span>个,感谢您对微星科技的支持！
+      <span class="color">{{globalFrootRemain}}</span>个,感谢您对我们的支持！
     </p>
     <!-- 表格 -->
     <el-table

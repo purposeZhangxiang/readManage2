@@ -15,7 +15,7 @@
     <p>
       代理用户您好,你当前剩余的root码剩余
       <span class="color">{{globalRootRemain}}</span>个,非root码剩余
-      <span class="color">{{globalFrootRemain}}</span>个,感谢您对微星科技的支持！
+      <span class="color">{{globalFrootRemain}}</span>个,感谢您对我们的支持！
     </p>
     <!-- 表格 -->
     <el-table
@@ -34,7 +34,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleObserveble(scope.$index, scope.row)">查看设备</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <!-- <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>

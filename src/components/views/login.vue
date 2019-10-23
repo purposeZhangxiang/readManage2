@@ -17,7 +17,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="company">©2019 保定微星科技有限公司</div>
+    <!-- <div class="company">©2019 保定微星科技有限公司</div> -->
   </div>
 </template>
 
@@ -55,7 +55,7 @@ export default {
         account: [{ validator: checkAccount, trigger: "blur" }],
         password: [{ validator: validatePass, trigger: "blur" }]
       },
-      name: "微星阅读管理系统"
+      name: "阅读管理系统"
     };
   },
   created() {},

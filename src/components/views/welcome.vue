@@ -1,8 +1,8 @@
 <template>
   <div class="bg">
     <div class="header">
-      <h2>{{username}} 你好 欢迎登录微星助手管理系统</h2>
-      <h3>感谢你对微星科技的信任和支持 我们会做得更好</h3>
+      <h2>{{username}} 你好 欢迎登录阅读管理系统</h2>
+      <h3>感谢你对我们的信任和支持 我们会做得更好</h3>
     </div>
     <div class="section" v-if="level==1">
       <div class="total">

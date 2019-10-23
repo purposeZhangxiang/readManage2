@@ -1,14 +1,14 @@
 <template>
   <div class="header">
     <div id="logo" :class="iconClick? 'leftLocation':'centerLocation'">
-      <img src="../../assets/logo.png" alt="logo" />
+      <!-- <img src="../../assets/logo.png" alt="logo" /> -->
     </div>
     <div class="setting">
       <div class="setting-left">
         <div class="controlIcon">
           <i :class="iconLR" @click="open"></i>
         </div>
-        <div class="comName">微星网络科技有限公司</div>
+        <!-- <div class="comName">微星网络科技有限公司</div> -->
       </div>
       <el-dropdown trigger="hover">
         <span class="el-dropdown-link userinfo-inner">
