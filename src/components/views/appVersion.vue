@@ -4,7 +4,7 @@
     <breadNav :nowLocation="nowLocation"></breadNav>
     <!-- 表格 -->
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%">
-      <el-table-column prop="versionInfo" label="版本信息" min-width="100" width="200"></el-table-column>
+      <el-table-column prop="versionInfo" label="版本信息" min-width="100" width="300"></el-table-column>
       <el-table-column prop="versionNo" label="版本号" min-width="100" width="200"></el-table-column>
       <el-table-column prop="filePath" label="版本路径" min-width="100" width="300"></el-table-column>
       <el-table-column label="操作">

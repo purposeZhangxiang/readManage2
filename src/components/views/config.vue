@@ -158,7 +158,7 @@ export default {
         //add8-30
         versionName: "",
         syncUrl: "",
-        takeCashInteval: "",
+        takeCashInteval: 1,
         inventCode: ""
       },
       //分类options

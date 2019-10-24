@@ -59,7 +59,7 @@
             type="textarea"
             placeholder="请输入内容"
             v-model="form.message"
-            maxlength="150"
+            maxlength="400"
             rows="3"
             show-word-limit
           ></el-input>
