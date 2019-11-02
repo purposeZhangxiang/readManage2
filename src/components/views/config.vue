@@ -156,7 +156,7 @@ export default {
         packageName: "",
         handleReadWardRate: 0,
         //add8-30
-        versionName: "",
+        versionName: "00000000",
         syncUrl: "",
         takeCashInteval: 1,
         inventCode: ""
