@@ -9,6 +9,7 @@
         ref="ruleForm"
         label-width="100px"
         class="demo-ruleForm"
+        size="small"
       >
         <el-form-item label="当前账户">
           <el-input type="text" v-model="ruleForm.user" autocomplete="off" readonly="readonly"></el-input>
@@ -101,7 +102,7 @@ export default {
 <style lang="less">
 .userInfo {
   margin-top: 20px;
-  width: 50%;
+  width: 30%;
   min-width: 240px;
 }
 </style>

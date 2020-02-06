@@ -3,7 +3,7 @@
     <!-- 面包屑 -->
     <breadNav :nowLocation="nowLocation"></breadNav>
     <!-- 操作栏 -->
-    <el-form :inline="true" class="operate">
+    <el-form :inline="true" class="operate" size="small">
       <el-form-item>
         <el-button type="primary" @click="add">新增包配置</el-button>
       </el-form-item>

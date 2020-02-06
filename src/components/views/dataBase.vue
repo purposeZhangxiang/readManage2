@@ -4,7 +4,7 @@
     <!-- 操作栏 -->
     <el-form :inline="true" class="operate">
       <el-form-item>
-        <el-button type="primary" @click="backups">备份数据库</el-button>
+        <el-button type="primary" @click="backups" size="small">备份数据库</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -18,7 +18,7 @@ export default {
   },
   data() {
     return {
-      nowLocation: ["数据库管理"],
+      nowLocation: ["数据库管理"]
     };
   },
   methods: {

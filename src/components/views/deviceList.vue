@@ -3,7 +3,7 @@
     <!-- 面包屑 -->
     <breadNav :nowLocation="nowLocation"></breadNav>
     <!-- 操作栏 -->
-    <el-form :inline="true" :model="formInline" class="operate">
+    <el-form :inline="true" :model="formInline" class="operate" size="small">
       <el-form-item label>
         <el-input-number v-model="formInline.size" :min="0" :max="500" label="新增设备数量"></el-input-number>
       </el-form-item>

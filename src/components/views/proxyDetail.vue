@@ -2,7 +2,7 @@
   <div>
     <breadNav :nowLocation="nowLocation" />
     <!-- 操作栏 -->
-    <el-form :inline="true" class="operate">
+    <el-form :inline="true" class="operate" size="small">
       <el-form-item>
         <el-button type="primary" @click="expansionNewType">扩容新种类码</el-button>
       </el-form-item>

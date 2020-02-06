@@ -5,11 +5,11 @@
     <!-- 操作栏 -->
     <el-form :inline="true" :model="formInline" class="operate">
       <el-form-item label>
-        <el-input v-model="formInline.content" placeholder="企业名称/操作者" clearable></el-input>
+        <el-input v-model="formInline.content" placeholder="企业名称/操作者" clearable size="small"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="search">查询</el-button>
-        <el-button type="primary" @click="add">新增企业</el-button>
+        <el-button type="primary" @click="search" size="small">查询</el-button>
+        <el-button type="primary" @click="add" size="small">新增企业</el-button>
       </el-form-item>
     </el-form>
     <!-- 表格 -->
@@ -18,6 +18,7 @@
       :data="tableData"
       tooltip-effect="dark"
       @selection-change="handleSelectionChange"
+      stripe
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column
@@ -55,7 +56,13 @@
       :width="dialogWidth"
     >
       <!-- 新增 -->
-      <el-form :model="dialogForm" v-if="dialogTitle=='新增' " ref="ruleForm" :rules="rules">
+      <el-form
+        :model="dialogForm"
+        v-if="dialogTitle=='新增' "
+        ref="ruleForm"
+        :rules="rules"
+        size="small"
+      >
         <el-row>
           <!-- left -->
           <el-col :span="12">
@@ -84,7 +91,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="功能开关" label-width="120px">
-            <el-checkbox-group v-model="dialogForm.gnkg" size="middle">
+            <el-checkbox-group v-model="dialogForm.gnkg">
               <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
@@ -95,7 +102,7 @@
       </el-form>
 
       <!-- 更新 -->
-      <el-form :model="dialogFormUpdate" v-if="dialogTitle=='更新' " ref="ruleForm" :rules="rules">
+      <el-form :model="dialogFormUpdate" v-if="dialogTitle=='更新' " ref="ruleForm" :rules="rules" size="small">
         <el-form-item label="企业名称" label-width="120px" prop="comName">
           <el-input v-model="dialogFormUpdate.comName" autocomplete="off"></el-input>
         </el-form-item>

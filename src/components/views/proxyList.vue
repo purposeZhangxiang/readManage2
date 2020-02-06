@@ -2,7 +2,7 @@
   <div>
     <breadNav :nowLocation="nowLocation" />
     <!-- 操作栏 -->
-    <el-form :inline="true" class="operate">
+    <el-form :inline="true" class="operate" size="small">
       <el-form-item>
         <el-button type="primary" @click="addProxy">新增</el-button>
         <el-button type="danger" @click="deleteSome">批量删除</el-button>
@@ -16,6 +16,7 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
       :highlight-current-row="true"
+      stripe
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="name" label="代理用户姓名" min-width="100" width="150"></el-table-column>
@@ -45,7 +46,7 @@
     <!-- 弹出框 -->
     <el-dialog :title="proxyTitle" :visible.sync="proxyDialog" @close="handleClose">
       <!-- form 新增代理 -->
-      <el-form :model="proxyform" v-if="proxyTitle=='新增代理' " ref="ruleForm" :rules="rules">
+      <el-form :model="proxyform" v-if="proxyTitle=='新增代理' " ref="ruleForm" :rules="rules" size="small">
         <el-row>
           <el-col :span="12">
             <el-form-item label="代理姓名" label-width="120px" prop="name">
@@ -69,7 +70,7 @@
             <el-input-number v-model="proxyform.root_froot.frootSize" :min="0" :max="500"></el-input-number>
           </el-form-item>
           <el-form-item label="非root码功能" label-width="120px">
-            <el-checkbox-group v-model="proxyform.root_froot.frootGnkg" size="middle">
+            <el-checkbox-group v-model="proxyform.root_froot.frootGnkg" >
               <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
@@ -77,14 +78,14 @@
             <el-input-number v-model="proxyform.root_froot.rootSize" :min="0" :max="500"></el-input-number>
           </el-form-item>
           <el-form-item label="root码功能" label-width="120px">
-            <el-checkbox-group v-model="proxyform.root_froot.rootGnkg" size="middle">
+            <el-checkbox-group v-model="proxyform.root_froot.rootGnkg" >
               <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>
         </el-row>
       </el-form>
       <!-- from 基础信息修改 -->
-      <el-form :model="proxyform3" v-if="proxyTitle=='编辑基础信息' ">
+      <el-form :model="proxyform3" v-if="proxyTitle=='编辑基础信息' "  size="small">
         <el-row>
           <el-col :span="12">
             <el-form-item label="代理姓名" label-width="120px">

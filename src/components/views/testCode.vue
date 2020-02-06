@@ -2,7 +2,7 @@
   <div>
     <breadNav :nowLocation="nowLocation" />
     <!-- 操作栏 -->
-    <el-form :inline="true" class="operate">
+    <el-form :inline="true" class="operate" size="small">
       <el-form-item>
         <el-select v-model="state" placeholder="激活码状态">
           <el-option label="全部" value="0"></el-option>
@@ -28,9 +28,9 @@
       ref="multipleTable"
       :data="tableData"
       tooltip-effect="dark"
-      style="width: 100%"
       @selection-change="handleSelectionChange"
       :highlight-current-row="true"
+      stripe
     >
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="code" label="激活码" min-width="100" width="150"></el-table-column>
