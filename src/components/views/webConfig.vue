@@ -2,7 +2,7 @@
   <div>
     <breadNav :nowLocation="nowLocation" />
     <!-- 操作栏 -->
-    <el-form :inline="true" class="operate">
+    <el-form :inline="true" class="operate" size="small">
       <el-form-item>
         <el-button type="primary" @click="addWebConfig">新增</el-button>
         <el-button type="danger" @click="deleteSome">批量删除</el-button>

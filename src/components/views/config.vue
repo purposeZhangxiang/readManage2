@@ -183,7 +183,7 @@ export default {
   },
   methods: {
     getConfig() {
-      http("/user/infoList", "post").then(res => {
+      http("/user/infoListWeb", "post").then(res => {
         this.tableData = res;
       });
     },
