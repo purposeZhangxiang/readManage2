@@ -2,19 +2,22 @@
   <div>
     <!-- 面包屑 -->
     <breadNav :nowLocation="nowLocation"></breadNav>
-    <el-form :inline="true" class="operate">
-      <el-form-item>
-        <el-select v-model="state" placeholder="激活码状态">
+    <el-form :inline="true" class="operate" size="small">
+      <el-form-item label="激活码状态">
+        <el-select v-model="state">
           <el-option label="全部" value="0"></el-option>
           <el-option label="未激活" value="1"></el-option>
           <el-option label="已激活" value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item>
-        <el-select v-model="rootState" placeholder="root状态">
+      <el-form-item label="root状态">
+        <el-select v-model="rootState">
           <el-option label="root" value="1"></el-option>
           <el-option label="非root" value="2"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="设备码">
+        <el-input v-model="code" placeholder="请输入设备码" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查看</el-button>
@@ -62,7 +65,7 @@
     </div>
     <!-- 弹出层 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" @close="handelClose">
-      <el-form :model="monthForm">
+      <el-form :model="monthForm" size="small">
         <el-form-item label="root状态" label-width="200">
           <el-select v-model="monthForm.rootType" placeholder="非ROOT /ROOT">
             <el-option label="root" value="1"></el-option>
@@ -100,6 +103,7 @@ export default {
       nowLocation: ["代理月卡列表"],
       state: "0",
       rootState: "1",
+      code:'',
       tableData: [],
       //page
       currentPage: 1,
@@ -125,13 +129,16 @@ export default {
         page: this.currentPage,
         pageSize: this.pageSize,
         stauts: this.state,
-        rootType: this.rootState
+        rootType: this.rootState,
+        code:this.code
       }).then(res => {
         for (let item of res.list) {
           item.activeTime === null
             ? (item.activeTime = "未激活")
             : item.activeTime;
-          item.rootType == 1 ? (item.rootType = "root") : (item.rootType = "非root");
+          item.rootType == 1
+            ? (item.rootType = "root")
+            : (item.rootType = "非root");
         }
         this.tableData = res.list;
         this.total = res.total;

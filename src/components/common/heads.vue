@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div id="logo" :class="iconClick? 'leftLocation':'centerLocation'">
-      <!-- <img src="../../assets/logo.png" alt="logo" /> -->
+      <!-- <img src="../../assets/logo2.png" alt="logo" /> -->
     </div>
     <div class="setting">
       <div class="setting-left">

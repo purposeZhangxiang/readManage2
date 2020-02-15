@@ -3,7 +3,7 @@
     <!-- 面包屑 -->
     <breadNav :nowLocation="nowLocation"></breadNav>
     <!-- 操作栏 -->
-    <el-form :inline="true" :model="formInline" class="operate">
+    <el-form :inline="true" :model="formInline" class="operate" size="small">
       <el-form-item label>
         <el-input v-model="formInline.content" placeholder="企业名称搜索"></el-input>
       </el-form-item>
@@ -52,7 +52,7 @@
     </div>
     <!-- 模态框 -->
     <el-dialog title="新增" :visible.sync="dialogFormVisible" @close="dialogClose">
-      <el-form :model="dialogForm" :rules="ruleForm" ref="ruleForm">
+      <el-form :model="dialogForm" :rules="ruleForm" ref="ruleForm" size="small">
         <el-row>
           <!-- left -->
           <el-col :span="12">
@@ -82,7 +82,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="功能开关" label-width="120px">
-            <el-checkbox-group v-model="dialogForm.gnkg" size="middle">
+            <el-checkbox-group v-model="dialogForm.gnkg" >
               <el-checkbox-button v-for="index in gnOptions" :label="index" :key="index">{{index}}</el-checkbox-button>
             </el-checkbox-group>
           </el-form-item>

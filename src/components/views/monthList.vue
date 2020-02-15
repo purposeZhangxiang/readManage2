@@ -3,26 +3,38 @@
     <breadNav :nowLocation="nowLocation" />
     <!-- 操作栏 -->
     <el-form :inline="true" class="operate" size="small">
-      <el-form-item>
+      <el-form-item label="激活码状态">
         <el-select v-model="state" placeholder="激活码状态">
           <el-option label="全部" value="0"></el-option>
           <el-option label="未激活" value="1"></el-option>
           <el-option label="已激活" value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item>
+      <el-form-item label="root状态">
         <el-select v-model="rootState" placeholder="root状态">
           <el-option label="root" value="1"></el-option>
           <el-option label="非root" value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item>
-        <el-input v-model="value" placeholder="操作者" clearable></el-input>
+      <el-form-item label="功能开关">
+        <el-select v-model="selectGnkg" multiple placeholder="下拉选择功能开关">
+          <el-option v-for="item in gnOptions" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="设备码">
+        <el-input v-model="code" placeholder="请输入设备码" clearable></el-input>
+      </el-form-item>
+      <!-- <el-form-item label="导出条目">
+        <el-input-number v-model="exportform.num" controls-position="right" :min="0"></el-input-number>
+      </el-form-item>-->
+      <el-form-item label="操作者">
+        <el-input v-model="operater" placeholder="请输入操作者" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查看</el-button>
         <el-button type="primary" @click="exportExcel">导出</el-button>
         <el-button type="primary" @click="createCode">生成月卡</el-button>
+        <el-button type="primary" @click="changeGnkg">批量修改功能开关</el-button>
         <el-button type="danger" @click="deleteSome">批量删除</el-button>
       </el-form-item>
     </el-form>
@@ -65,7 +77,7 @@
     <!-- 导出功能弹出层 -->
     <el-dialog title="导出" :visible.sync="exportdiaVisible" width="20%">
       <el-form :model="exportform">
-        <el-form-item label="导出状态" label-width="200">
+        <!-- <el-form-item label="导出状态" label-width="200">
           <el-select v-model="exportform.exportType">
             <el-option label="导出全部" value="0"></el-option>
             <el-option label="导出全部已激活" value="1"></el-option>
@@ -85,6 +97,15 @@
             <el-option label="未激活" value="1"></el-option>
             <el-option label="已激活" value="2"></el-option>
           </el-select>
+        </el-form-item>-->
+
+        <!-- update -->
+
+        <el-form-item label="导出最近">
+          <el-switch v-model="exportform.switch"></el-switch>
+        </el-form-item>
+        <el-form-item label="导出条目" v-if="exportform.switch">
+          <el-input-number v-model="exportform.num" controls-position="right" :min="1"></el-input-number>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -129,9 +150,11 @@ export default {
     return {
       nowLocation: ["月卡列表"],
       type: "1", //3-月卡
-      state: "0", //el-optinos
-      rootState: "1", //el-optinos
-      value: "",
+      state: "0", //激活状态
+      rootState: "1", //root状态
+      selectGnkg: [], // 已勾选功能开关
+      code: "", //设备码
+      operater: "", //操作者
       multipleSelection: [],
       tableData: [],
       currentPage: 1,
@@ -140,9 +163,12 @@ export default {
       /**导出模态框数据 */
       exportdiaVisible: false,
       exportform: {
-        exportType: "0",
-        rootType: "1",
-        state: "0"
+        // exportType: "0",
+        // rootType: "1",
+        // state: "0",
+        /**update 2020/2/11 */
+        switch: false,
+        num: ""
       },
       /**生成月卡模态框数据 */
       monthVisible: false,
@@ -188,23 +214,37 @@ export default {
       this.getMonthList(val, this.pageSize);
     },
     getMonthList(currentPage = 1, pageSize = 10) {
-      http("/manager/codeList", "post", {
+      // http("/manager/codeList", "post", {
+      //   page: currentPage,
+      //   pageSize: pageSize,
+      //   type: this.type,
+      //   state: this.state, //激活状态
+      //   rootType: this.rootState,
+      //   value: this.operater // 操作者
+      // }).then(res => {
+      //   for (let item of res.list) {
+      //     item.activeTime === null
+      //       ? (item.activeTime = "未激活")
+      //       : item.activeTime;
+      //     item.rootType == 1
+      //       ? (item.rootType = "root")
+      //       : (item.rootType = "非root");
+      //   }
+      //   this.tableData = res.list;
+      //   this.total = res.total;
+      // });
+
+      http("/manager/agentMonthCodeList", "post", {
         page: currentPage,
         pageSize: pageSize,
-        type: this.type,
-        state: this.state, //激活状态
+        status: this.state,
         rootType: this.rootState,
-        value: this.value
+        gnkg: this.selectGnkg.join(","),
+        code: this.code,
+        operater: this.operater
       }).then(res => {
-        for (let item of res.list) {
-          item.activeTime === null
-            ? (item.activeTime = "未激活")
-            : item.activeTime;
-          item.rootType == 1
-            ? (item.rootType = "root")
-            : (item.rootType = "非root");
-        }
         this.tableData = res.list;
+        debugger;
         this.total = res.total;
       });
     },
@@ -240,26 +280,41 @@ export default {
       }
     },
     exportSuc() {
-      let obj = {};
-      if (this.exportform.exportType == 3) {
-        //当前页
-        obj = {
-          page: this.currentPage,
-          pageSize: this.pageSize,
-          type: this.type,
-          rootType: this.exportform.rootType,
-          state: this.exportform.state,
-          exportType: 3
-        };
-      } else {
-        //导出全部
-        obj = {
-          type: this.type,
-          rootType: this.exportform.rootType,
-          exportType: this.exportform.exportType
-        };
+      // let obj = {};
+      // if (this.exportform.exportType == 3) {
+      //   //当前页
+      //   obj = {
+      //     page: this.currentPage,
+      //     pageSize: this.pageSize,
+      //     type: this.type,
+      //     rootType: this.exportform.rootType,
+      //     state: this.exportform.state,
+      //     exportType: 3
+      //   };
+      // } else {
+      //   //导出全部
+      //   obj = {
+      //     type: this.type,
+      //     rootType: this.exportform.rootType,
+      //     exportType: this.exportform.exportType
+      //   };
+      // }
+      // http("/file/exportCode", "get", obj, "blob");
+      /**
+       *update
+       */
+      let obj = {
+        status: this.state,
+        rootType: this.rootState,
+        gnkg: this.selectGnkg.join(","),
+        code: this.code
+        // number: this.exportform.num
+      };
+
+      if (this.exportform.switch) {
+        obj.number = this.exportform.num;
       }
-      http("/file/exportCode", "get", obj, "blob");
+      http("/file/exportCodeMonth", "get", obj, "blob");
     },
     monthSuc() {
       let cloneData = JSON.parse(JSON.stringify(this.seasonform));
@@ -270,6 +325,9 @@ export default {
         this.monthVisible = !this.monthVisible;
         this.getMonthList();
       });
+    },
+    changeGnkg(){
+      alert("开发中")
     }
   }
 };
