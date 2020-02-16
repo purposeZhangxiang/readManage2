@@ -29,8 +29,8 @@
     </el-table>
 
     <!-- 弹出框 -->
-    <el-dialog :title="webDialogTitle" :visible.sync="webDialog">
-      <el-form :model="webform">
+    <el-dialog :title="webDialogTitle" :visible.sync="webDialog" width="35%">
+      <el-form :model="webform" size="small">
         <el-form-item label="url地址" label-width="120px">
           <el-input v-model="webform.url" autocomplete="off"></el-input>
         </el-form-item>

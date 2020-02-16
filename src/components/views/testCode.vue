@@ -3,18 +3,26 @@
     <breadNav :nowLocation="nowLocation" />
     <!-- 操作栏 -->
     <el-form :inline="true" class="operate" size="small">
-      <el-form-item>
+      <el-form-item label="激活码状态">
         <el-select v-model="state" placeholder="激活码状态">
           <el-option label="全部" value="0"></el-option>
           <el-option label="未激活" value="1"></el-option>
           <el-option label="已激活" value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item>
+      <el-form-item label="root状态">
         <el-select v-model="rootState" placeholder="root状态">
           <el-option label="root" value="1"></el-option>
           <el-option label="非root" value="2"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="功能开关">
+        <el-select v-model="selectGnkg" multiple placeholder="下拉选择功能开关">
+          <el-option v-for="item in gnOptions" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="设备码">
+        <el-input v-model="code" placeholder="请输入设备码" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查看</el-button>
@@ -59,27 +67,13 @@
     </div>
     <!-- 导出功能弹出层 -->
     <el-dialog title="导出" :visible.sync="exportdiaVisible" width="20%">
-      <el-form :model="exportform">
-        <el-form-item label="导出状态" label-width="200">
-          <el-select v-model="exportform.exportType">
-            <el-option label="导出全部" value="0"></el-option>
-            <el-option label="导出全部已激活" value="1"></el-option>
-            <el-option label="导出全部未激活" value="2"></el-option>
-            <el-option label="导出当前页" value="3"></el-option>
-          </el-select>
+      <!-- update -->
+      <el-form>
+        <el-form-item label="导出最近">
+          <el-switch v-model="exportform.switch"></el-switch>
         </el-form-item>
-        <el-form-item label="root状态" label-width="200">
-          <el-select v-model="exportform.rootType">
-            <el-option label="root" value="1"></el-option>
-            <el-option label="非root" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="激活状态" label-width="200" v-if="exportform.exportType==3">
-          <el-select v-model="exportform.state">
-            <el-option label="全部" value="0"></el-option>
-            <el-option label="未激活" value="1"></el-option>
-            <el-option label="已激活" value="2"></el-option>
-          </el-select>
+        <el-form-item label="导出条目" v-if="exportform.switch">
+          <el-input-number v-model="exportform.num" controls-position="right" :min="1"></el-input-number>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -87,8 +81,8 @@
         <el-button type="primary" @click="exportSuc">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 生成季卡弹出层 -->
-    <el-dialog title="生成测试码" :visible.sync="testVisible" width="40%">
+    <!-- 生成测试码弹出层 -->
+    <el-dialog title="生成测试码" :visible.sync="testVisible" width="40%" size="small">
       <el-form :model="seasonform">
         <el-form-item label="root状态" label-width="200">
           <el-select v-model="seasonform.rootType" placeholder="非ROOT /ROOT">
@@ -97,7 +91,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="功能开关">
-          <el-checkbox-group v-model="seasonform.gnkg" size="middle">
+          <el-checkbox-group v-model="seasonform.gnkg">
             <el-checkbox-button v-for="item in gnOptions" :label="item" :key="item">{{item}}</el-checkbox-button>
           </el-checkbox-group>
         </el-form-item>
@@ -126,6 +120,8 @@ export default {
       type: "2", //2 -测试码
       state: "0", //el-optinos
       rootState: "1", //el-optinos
+      selectGnkg: [],
+      code: "",
       multipleSelection: [],
       tableData: [],
       currentPage: 1,
@@ -134,9 +130,11 @@ export default {
       /**导出模态框数据 */
       exportdiaVisible: false,
       exportform: {
-        exportType: "0",
-        rootType: "1",
-        state: "0"
+        // exportType: "0",
+        // rootType: "1",
+        // state: "0",
+        switch: false,
+        num: 1
       },
       /**生成测试码模态框数据 */
       testVisible: false,
@@ -182,12 +180,16 @@ export default {
       this.getTestCodeList(val, this.pageSize);
     },
     getTestCodeList(currentPage = 1, pageSize = 10) {
-      http("/manager/codeList", "post", {
+      // http("/manager/codeList", "post", {
+      let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
+      http("/manager/queryActivationCode", "post", {
         page: currentPage,
         pageSize: pageSize,
         type: this.type,
         state: this.state, //激活状态
-        rootType: this.rootState
+        rootType: this.rootState,
+        gnkg: globalFunc.binary(cloneGnkg),
+        code: this.code
       }).then(res => {
         for (let item of res.list) {
           item.activeTime === null

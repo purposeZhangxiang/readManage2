@@ -3,7 +3,7 @@
     <!-- 面包屑 -->
     <breadNav :nowLocation="nowLocation"></breadNav>
     <!-- 操作栏 -->
-    <el-form :inline="true" class="operate">
+    <el-form :inline="true" class="operate" size="small">
       <el-form-item>
         <el-button type="primary" @click="add">新增阅读配置</el-button>
         <el-button type="primary" @click="cloudUpdate">云更新配置管理</el-button>
@@ -27,7 +27,7 @@
     </el-table>
     <!-- 模态框 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" @close="dialogClose">
-      <el-form :model="dialogForm">
+      <el-form :model="dialogForm" size="small">
         <el-col :span="12">
           <el-form-item label="软件名称" label-width="140px">
             <el-input v-model="dialogForm.name"></el-input>

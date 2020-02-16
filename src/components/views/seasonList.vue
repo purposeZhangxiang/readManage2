@@ -3,18 +3,26 @@
     <breadNav :nowLocation="nowLocation" />
     <!-- 操作栏 -->
     <el-form :inline="true" class="operate" size="small">
-      <el-form-item>
-        <el-select v-model="state" placeholder="激活码状态">
+      <el-form-item label="激活码状态">
+        <el-select v-model="state">
           <el-option label="全部" value="0"></el-option>
           <el-option label="未激活" value="1"></el-option>
           <el-option label="已激活" value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item>
-        <el-select v-model="rootState" placeholder="root状态">
+      <el-form-item label="root状态">
+        <el-select v-model="rootState">
           <el-option label="root" value="1"></el-option>
           <el-option label="非root" value="2"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="功能开关">
+        <el-select v-model="selectGnkg" multiple placeholder="下拉选择功能开关">
+          <el-option v-for="item in gnOptions" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="设备码">
+        <el-input v-model="code" placeholder="请输入设备码" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">查看</el-button>
@@ -127,6 +135,8 @@ export default {
       type: "3", //3-季卡
       state: "0", //el-optinos
       rootState: "1", //el-optinos
+      selectGnkg: [],
+      code: "",
       multipleSelection: [],
       tableData: [],
       currentPage: 1,
@@ -188,12 +198,16 @@ export default {
       this.getSeasonList(val, this.pageSize);
     },
     getSeasonList(currentPage = 1, pageSize = 10) {
-      http("/manager/codeList", "post", {
+      // http("/manager/codeList", "post", {
+      let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
+      http("/manager/queryActivationCode", "post", {
         page: currentPage,
         pageSize: pageSize,
         type: this.type, //季卡
         state: this.state, //激活状态
-        rootType: this.rootState
+        rootType: this.rootState,
+        gnkg: globalFunc.binary(cloneGnkg),
+        code: this.code
       }).then(res => {
         for (let item of res.list) {
           item.activeTime === null

@@ -77,30 +77,7 @@
     <!-- 导出功能弹出层 -->
     <el-dialog title="导出" :visible.sync="exportdiaVisible" width="20%">
       <el-form :model="exportform">
-        <!-- <el-form-item label="导出状态" label-width="200">
-          <el-select v-model="exportform.exportType">
-            <el-option label="导出全部" value="0"></el-option>
-            <el-option label="导出全部已激活" value="1"></el-option>
-            <el-option label="导出全部未激活" value="2"></el-option>
-            <el-option label="导出当前页" value="3"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="root状态" label-width="200">
-          <el-select v-model="exportform.rootType">
-            <el-option label="root" value="1"></el-option>
-            <el-option label="非root" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="激活状态" label-width="200" v-if="exportform.exportType==3">
-          <el-select v-model="exportform.state">
-            <el-option label="全部" value="0"></el-option>
-            <el-option label="未激活" value="1"></el-option>
-            <el-option label="已激活" value="2"></el-option>
-          </el-select>
-        </el-form-item>-->
-
         <!-- update -->
-
         <el-form-item label="导出最近">
           <el-switch v-model="exportform.switch"></el-switch>
         </el-form-item>
@@ -236,10 +213,11 @@ export default {
 
       // gnkg
       let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg))
-
-      http("/manager/agentMonthCodeList", "post", {
+      ///manager/agentMonthCodeList
+      http("/manager/queryActivationCode", "post", {
         page: currentPage,
         pageSize: pageSize,
+        type:this.type,
         status: this.state,
         rootType: this.rootState,
         gnkg: globalFunc.binary(cloneGnkg),

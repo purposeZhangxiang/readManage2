@@ -30,7 +30,7 @@
     </el-table>
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
-      <el-form :model="dialogForm">
+      <el-form :model="dialogForm" size="small">
         <el-row>
           <!-- left -->
           <el-col :span="12">
