@@ -64,7 +64,7 @@ export default {
       this.dialogForm.filePath = row.filePath;
     },
     getVersion() {
-      http("/version/curVersion", "get").then(res => {
+      http("/version/curVersionWeb", "get").then(res => {
         let arr = [];
         let json = {};
         for (let index in res) {

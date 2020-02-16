@@ -86,6 +86,26 @@
         <el-button type="primary" @click="createMonth">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 导出弹出层 -->
+    <el-dialog title="导出" :visible.sync="excelDialogVisible" width="20%" @close="excelHandelClose">
+      <div>
+        导出最近开关状态为打开时，输入数目后,倒序呈现。
+        <br />导出最近开关状态为关闭时，导出全部。
+      </div>
+      <el-form v-model="exportform">
+        <el-form-item label="导出最近">
+          <el-switch v-model="exportform.switch"></el-switch>
+        </el-form-item>
+        <el-form-item label="导出数目" v-if="exportform.switch">
+          <el-input-number v-model="exportform.num" controls-position="right" :min="1"></el-input-number>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="excelDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="exportSuc">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -103,7 +123,7 @@ export default {
       nowLocation: ["代理月卡列表"],
       state: "0",
       rootState: "1",
-      code:'',
+      code: "",
       tableData: [],
       //page
       currentPage: 1,
@@ -117,6 +137,12 @@ export default {
         rootType: "",
         gnkg: [],
         size: ""
+      },
+      // excel dialog
+      excelDialogVisible: false,
+      exportform: {
+        switch: false,
+        num: 1
       }
     };
   },
@@ -128,9 +154,9 @@ export default {
       http("/manager/agentMonthCodeList", "post", {
         page: this.currentPage,
         pageSize: this.pageSize,
-        stauts: this.state,
+        status: this.state,
         rootType: this.rootState,
-        code:this.code
+        code: this.code
       }).then(res => {
         for (let item of res.list) {
           item.activeTime === null
@@ -152,14 +178,18 @@ export default {
       this.getProxyMonthList();
     },
     exportExcel() {
-      http(
-        "/file/exportCode",
-        "get",
-        { state: this.state, rootType: this.rootState },
-        "blob"
-      ).then(res => {
-        this.$message.success("导出成功");
-      });
+      // http(
+      //   "/file/exportCode",
+      //   "get",
+      //   { state: this.state, rootType: this.rootState },
+      //   "blob"
+      // ).then(res => {
+      //   this.$message.success("导出成功");
+      // });
+      /***
+       * update 2020 2 16
+       */
+      this.excelDialogVisible = !this.excelDialogVisible;
     },
     createCode() {
       this.dialogTitle = "生成月卡";
@@ -270,6 +300,20 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getProxyMonthList();
+    },
+    //2 16
+    excelHandelClose() {},
+    exportSuc() {
+      let obj = {
+        status: this.state,
+        rootType: this.rootState,
+        code: this.code
+      };
+      if (this.exportform.switch) {
+        obj.number = this.exportform.num;
+      }
+      http("/file/exportCodeMonth", "get", obj, "blob");
+      this.excelDialogVisible = !this.excelDialogVisible;
     }
   }
 };

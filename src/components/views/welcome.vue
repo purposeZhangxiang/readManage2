@@ -56,8 +56,46 @@
         <p class="num">{{total.season.used?total.season.used:0}}</p>
       </div>
     </div>
-    <div v-else style="text-align:center">
+    <!-- 代理 -->
+    <!-- <div v-else style="text-align:center">
       <img src="../../assets/img/welcome.png" alt />
+    </div>-->
+
+    <div v-else class="proxyBox">
+      <div class="calender">
+        <el-calendar v-model="calendar"></el-calendar>
+      </div>
+      <div class="codeInfo">
+        <div class="proxyTitle">剩余码信息</div>
+        <div class="tips">
+         <span style="color:red"> 温馨提示：</span>
+          <br />1-新增企业用户时该企业用户下面的设备号功能已经定死不可更改,请谨慎操作
+          <br />2-选择功能开关时时请详细对比此页面表格的剩余数进行操作
+        </div>
+        <el-collapse v-model="activeNames" @change="handleChange">
+          <el-collapse-item title="ROOR码查询" name="1">
+            <!-- table1 -->
+            <el-table ref="multipleTable" :data="rootRemain" tooltip-effect="dark" border>
+              <el-table-column
+                v-for="(item,index) in rootTb"
+                :key="index"
+                :label="item.label"
+                :prop="item.prop"
+              ></el-table-column>
+            </el-table>
+          </el-collapse-item>
+          <el-collapse-item title="非ROOR码查询" name="2">
+            <el-table :data="frootRemain" border>
+              <el-table-column
+                v-for="(item,index) in rootTb"
+                :key="index"
+                :label="item.label"
+                :prop="item.prop"
+              ></el-table-column>
+            </el-table>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
     </div>
   </div>
 </template>
@@ -75,7 +113,25 @@ export default {
         season: {
           total: ""
         }
-      }
+      },
+      // proxy page var
+      calendar: new Date(),
+      activeNames: [],
+      rootRemain: [],
+      rootTb: [
+        {
+          label: "功能开关",
+          prop: "codeData.gnkg"
+        },
+        {
+          label: "此功能码购买总数",
+          prop: "codeData.total"
+        },
+        {
+          label: "此功能码剩余数",
+          prop: "codeData.remain"
+        }
+      ]
     };
   },
   created() {
@@ -93,6 +149,35 @@ export default {
       let levelval = atob(sessionStorage.getItem(levelkey));
       this.username = sessionStorage.getItem("username");
       this.level = levelval;
+    },
+
+    handleChange(val) {
+      console.log(val);
+
+      this.getRemain();
+    },
+    // 获取代理剩余码
+    getRemain() {
+      http("/manager/fetchAgentLaveFunCode", "get", {
+        rootType: "1"
+      }).then(res => {
+        this.rootRemain = res;
+        let sum = 0;
+        for (let val of res) {
+          sum += val.codeData.total;
+        }
+        this.rootTotal = sum;
+      });
+      http("/manager/fetchAgentLaveFunCode", "get", {
+        rootType: "2"
+      }).then(res => {
+        this.frootRemain = res;
+        let sum = 0;
+        for (let val of res) {
+          sum += val.codeData.total;
+        }
+        this.frootTotal = sum;
+      });
     }
   }
 };
@@ -135,6 +220,24 @@ h3 {
 p {
   display: block;
   margin-block-start: 1em;
+}
+
+// proxy css
+.proxyBox {
+  display: flex;
+  padding: 10px;
+  div {
+    flex: 1;
+  }
+  .proxyTitle {
+    text-align: center;
+    height: 53px;
+    line-height: 53px;
+    font-weight: bold;
+  }
+  .tips {
+    padding: 6px 0;
+  }
 }
 </style>
 

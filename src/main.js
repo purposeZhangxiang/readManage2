@@ -5,9 +5,10 @@ import store from './store/store'
 
 
 //全局导入ElementUI模块和CSS样式并使用
-import Element from 'element-ui';
+import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(Element);
+Vue.use(ElementUI);
+
 //引入font-face
 import './assets/font_face/iconfont.css'
 

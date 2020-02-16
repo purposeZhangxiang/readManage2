@@ -234,17 +234,19 @@ export default {
       //   this.total = res.total;
       // });
 
+      // gnkg
+      let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg))
+
       http("/manager/agentMonthCodeList", "post", {
         page: currentPage,
         pageSize: pageSize,
         status: this.state,
         rootType: this.rootState,
-        gnkg: this.selectGnkg.join(","),
+        gnkg: globalFunc.binary(cloneGnkg),
         code: this.code,
         operater: this.operater
       }).then(res => {
         this.tableData = res.list;
-        debugger;
         this.total = res.total;
       });
     },
@@ -259,7 +261,7 @@ export default {
     },
     deleteSome() {
       if (this.multipleSelection.length == 0) {
-        this.$message.warning("请勾选要删除的设备");
+        this.$message.warning("请勾选要删除的设备码");
       } else {
         this.$confirm("确认删除?", "提示", {
           confirmButtonText: "确定",
@@ -303,10 +305,11 @@ export default {
       /**
        *update
        */
+      let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg))
       let obj = {
         status: this.state,
         rootType: this.rootState,
-        gnkg: this.selectGnkg.join(","),
+        gnkg: globalFunc.binary(cloneGnkg),
         code: this.code
         // number: this.exportform.num
       };
@@ -326,8 +329,33 @@ export default {
         this.getMonthList();
       });
     },
-    changeGnkg(){
-      alert("开发中")
+    changeGnkg() {
+      this.$message.warning("开发中");
+      return;
+
+      if (this.multipleSelection.length == 0) {
+        this.$message.warning("请勾选要修改功能开关的设备码");
+      } else {
+        this.$confirm("确认删除?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(() => {
+          //整理出 要修改功能开关的设备
+          let changeCodes = [];
+          for (let val of this.multipleSelection) {
+            changeCodes.push(val.code);
+          }
+          let codes = {
+            ids: changeCodes.join(","),
+            gnkg: this.selectGnkg.join(",")
+          };
+          http("/manager/updateActivationCode", "get", codes).then(res => {
+            this.$message.success("修改功能开关成功");
+            this.getMonthList();
+          });
+        });
+      }
     }
   }
 };
