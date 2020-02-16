@@ -235,27 +235,6 @@ export default {
       }
     },
     exportSuc() {
-      // let obj = {};
-      // if (this.exportform.exportType == 3) {
-      //   //当前页
-      //   obj = {
-      //     page: this.currentPage,
-      //     pageSize: this.pageSize,
-      //     type: this.type,
-      //     rootType: this.exportform.rootType,
-      //     state: this.exportform.state,
-      //     exportType: 3
-      //   };
-      // } else {
-      //   //导出全部
-      //   obj = {
-      //     type: this.type,
-      //     rootType: this.exportform.rootType,
-      //     exportType: this.exportform.exportType
-      //   };
-      // }
-      // http("/file/exportCode", "get", obj, "blob");
-
       let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
       let obj = {
         type: this.type,
@@ -269,6 +248,7 @@ export default {
         obj.number = this.exportform.num;
       }
       http("/file/exportCodeMonth", "get", obj, "blob");
+      this.exportdiaVisible = !this.exportdiaVisible;
     },
     testSuc() {
       let cloneData = JSON.parse(JSON.stringify(this.seasonform));

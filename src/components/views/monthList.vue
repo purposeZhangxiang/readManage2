@@ -296,6 +296,7 @@ export default {
         obj.number = this.exportform.num;
       }
       http("/file/exportCodeMonth", "get", obj, "blob");
+      this.exportdiaVisible = !this.exportdiaVisible;
     },
     monthSuc() {
       let cloneData = JSON.parse(JSON.stringify(this.seasonform));

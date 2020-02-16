@@ -68,7 +68,7 @@
     </div>
     <!-- 导出功能弹出层 -->
     <el-dialog title="导出" :visible.sync="exportdiaVisible" width="20%">
-      <el-form :model="exportform">
+      <!-- <el-form :model="exportform">
         <el-form-item label="导出状态" label-width="200">
           <el-select v-model="exportform.exportType">
             <el-option label="导出全部" value="0"></el-option>
@@ -89,6 +89,14 @@
             <el-option label="未激活" value="1"></el-option>
             <el-option label="已激活" value="2"></el-option>
           </el-select>
+        </el-form-item>
+      </el-form>-->
+      <el-form :model="exportform">
+        <el-form-item label="导出最近">
+          <el-switch v-model="exportform.switch"></el-switch>
+        </el-form-item>
+        <el-form-item label="导出条目" v-if="exportform.switch">
+          <el-input-number v-model="exportform.num" controls-position="right" :min="1"></el-input-number>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -145,9 +153,8 @@ export default {
       /**导出模态框数据 */
       exportdiaVisible: false,
       exportform: {
-        exportType: "0",
-        rootType: "1",
-        state: "0"
+        switch: false,
+        num: 1
       },
       /**生成季卡模态框数据 */
       seasonVisible: false,
@@ -253,26 +260,20 @@ export default {
       }
     },
     exportSuc() {
-      let obj = {};
-      if (this.exportform.exportType == 3) {
-        //当前页
-        obj = {
-          page: this.currentPage,
-          pageSize: this.pageSize,
-          type: this.type,
-          rootType: this.exportform.rootType,
-          state: this.exportform.state,
-          exportType: 3
-        };
-      } else {
-        //导出全部
-        obj = {
-          type: this.type,
-          rootType: this.exportform.rootType,
-          exportType: this.exportform.exportType
-        };
+      let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
+      let obj = {
+        type: this.type,
+        status: this.state,
+        rootType: this.rootState,
+        gnkg: globalFunc.binary(cloneGnkg),
+        code: this.code
+      };
+
+      if (this.exportform.switch) {
+        obj.number = this.exportform.num;
       }
-      http("/file/exportCode", "get", obj, "blob");
+      http("/file/exportCodeMonth", "get", obj, "blob");
+      this.exportdiaVisible = !this.exportdiaVisible;
     },
     seasonSuc() {
       let cloneData = JSON.parse(JSON.stringify(this.seasonform));
