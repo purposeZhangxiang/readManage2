@@ -212,12 +212,12 @@ export default {
       // });
 
       // gnkg
-      let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg))
+      let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
       ///manager/agentMonthCodeList
       http("/manager/queryActivationCode", "post", {
         page: currentPage,
         pageSize: pageSize,
-        type:this.type,
+        type: this.type,
         status: this.state,
         rootType: this.rootState,
         gnkg: globalFunc.binary(cloneGnkg),
@@ -283,13 +283,13 @@ export default {
       /**
        *update
        */
-      let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg))
+      let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
       let obj = {
+        type: this.type,
         status: this.state,
         rootType: this.rootState,
         gnkg: globalFunc.binary(cloneGnkg),
         code: this.code
-        // number: this.exportform.num
       };
 
       if (this.exportform.switch) {
@@ -324,9 +324,10 @@ export default {
           for (let val of this.multipleSelection) {
             changeCodes.push(val.code);
           }
+          let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
           let codes = {
             ids: changeCodes.join(","),
-            gnkg: this.selectGnkg.join(",")
+            gnkg: globalFunc.binary(cloneGnkg)
           };
           http("/manager/updateActivationCode", "get", codes).then(res => {
             this.$message.success("修改功能开关成功");
