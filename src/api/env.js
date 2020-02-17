@@ -17,10 +17,14 @@ if (process.env.NODE_ENV === 'development') {
     //前端测试环境
     imgUrl = '';
     baseUrl="http://47.94.138.109:8087"
+
+    // baseUrl= "http://39.105.78.33:8087"
 } else {
     //前端正式环境
     imgUrl = '';
-    baseUrl="http://47.94.138.109:8087"
+    // baseUrl="http://47.94.138.109:8087"
+
+    baseUrl= "http://39.105.78.33:8087"
 }
 
 export {

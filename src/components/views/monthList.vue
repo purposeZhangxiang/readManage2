@@ -92,7 +92,7 @@
     </el-dialog>
     <!-- 生成月卡弹出层 -->
     <el-dialog title="生成月卡激活码" :visible.sync="monthVisible" width="40%">
-      <el-form :model="seasonform">
+      <el-form :model="seasonform" size="small">
         <el-form-item label="root状态" label-width="200">
           <el-select v-model="seasonform.rootType" placeholder="非ROOT /ROOT">
             <el-option label="root" value="1"></el-option>
@@ -100,7 +100,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="功能开关">
-          <el-checkbox-group v-model="seasonform.gnkg" size="middle">
+          <el-checkbox-group v-model="seasonform.gnkg">
             <el-checkbox-button v-for="item in gnOptions" :label="item" :key="item">{{item}}</el-checkbox-button>
           </el-checkbox-group>
         </el-form-item>
@@ -111,6 +111,20 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="monthVisible = false">取 消</el-button>
         <el-button type="primary" @click="monthSuc">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 修改功能开关的弹出层 -->
+    <el-dialog title="修改功能开关" :visible.sync="gnkgDialog" width="40%">
+      <el-form :model="gnkgForm" size="small">
+        <el-form-item label="功能开关">
+          <el-checkbox-group v-model="gnkgForm.gnkg">
+            <el-checkbox-button v-for="item in gnOptions" :label="item" :key="item">{{item}}</el-checkbox-button>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="monthVisible = false">取 消</el-button>
+        <el-button type="primary" @click="gnkgDialogSuc">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -155,7 +169,11 @@ export default {
         size: 0
       },
       checkList: {},
-      gnOptions: [1, 2, 3, 4, 5, 6, 7, 8]
+      gnOptions: [1, 2, 3, 4, 5, 6, 7, 8],
+      gnkgDialog: false,
+      gnkgForm: {
+        gnkg: []
+      }
     };
   },
   created() {
@@ -191,26 +209,6 @@ export default {
       this.getMonthList(val, this.pageSize);
     },
     getMonthList(currentPage = 1, pageSize = 10) {
-      // http("/manager/codeList", "post", {
-      //   page: currentPage,
-      //   pageSize: pageSize,
-      //   type: this.type,
-      //   state: this.state, //激活状态
-      //   rootType: this.rootState,
-      //   value: this.operater // 操作者
-      // }).then(res => {
-      //   for (let item of res.list) {
-      //     item.activeTime === null
-      //       ? (item.activeTime = "未激活")
-      //       : item.activeTime;
-      //     item.rootType == 1
-      //       ? (item.rootType = "root")
-      //       : (item.rootType = "非root");
-      //   }
-      //   this.tableData = res.list;
-      //   this.total = res.total;
-      // });
-
       // gnkg
       let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
       ///manager/agentMonthCodeList
@@ -260,26 +258,6 @@ export default {
       }
     },
     exportSuc() {
-      // let obj = {};
-      // if (this.exportform.exportType == 3) {
-      //   //当前页
-      //   obj = {
-      //     page: this.currentPage,
-      //     pageSize: this.pageSize,
-      //     type: this.type,
-      //     rootType: this.exportform.rootType,
-      //     state: this.exportform.state,
-      //     exportType: 3
-      //   };
-      // } else {
-      //   //导出全部
-      //   obj = {
-      //     type: this.type,
-      //     rootType: this.exportform.rootType,
-      //     exportType: this.exportform.exportType
-      //   };
-      // }
-      // http("/file/exportCode", "get", obj, "blob");
       /**
        *update
        */
@@ -309,33 +287,54 @@ export default {
       });
     },
     changeGnkg() {
-      this.$message.warning("开发中");
-      return;
+      // this.$message.warning("开发中");
+      // return;
 
       if (this.multipleSelection.length == 0) {
-        this.$message.warning("请勾选要修改功能开关的设备码");
-      } else {
-        this.$confirm("确认删除?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(() => {
-          //整理出 要修改功能开关的设备
-          let changeCodes = [];
-          for (let val of this.multipleSelection) {
-            changeCodes.push(val.code);
-          }
-          let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
-          let codes = {
-            ids: changeCodes.join(","),
-            gnkg: globalFunc.binary(cloneGnkg)
-          };
-          http("/manager/updateActivationCode", "get", codes).then(res => {
-            this.$message.success("修改功能开关成功");
-            this.getMonthList();
-          });
-        });
+        return this.$message.warning("请勾选要修改功能开关的设备码");
       }
+      // } else {
+      //   this.$confirm("确认修改这些码的功能开关?", "提示", {
+      //     confirmButtonText: "确定",
+      //     cancelButtonText: "取消",
+      //     type: "warning"
+      //   }).then(() => {
+      //     //整理出 要修改功能开关的设备
+      //     let changeCodes = [];
+      //     for (let val of this.multipleSelection) {
+      //       changeCodes.push(val.code);
+      //     }
+      //     let cloneGnkg = JSON.parse(JSON.stringify(this.selectGnkg));
+      //     let codes = {
+      //       ids: changeCodes.join(","),
+      //       gnkg: globalFunc.binary(cloneGnkg)
+      //     };
+      //     http("/manager/updateActivationCode", "get", codes).then(res => {
+      //       this.$message.success("修改功能开关成功");
+      //       this.getMonthList();
+      //     });
+      //   });
+      // }
+      this.changeGnkgDialog();
+    },
+    changeGnkgDialog() {
+      this.gnkgDialog = !this.gnkgDialog;
+    },
+    gnkgDialogSuc() {
+      let cloneGnkg = JSON.parse(JSON.stringify(this.gnkgForm.gnkg));
+
+      let changeCodes = [];
+      for (let val of this.multipleSelection) {
+        changeCodes.push(val.code);
+      }
+      let codes = {
+        ids: changeCodes.join(","),
+        gnkg: globalFunc.binary(cloneGnkg)
+      };
+      http("/manager/updateActivationCode", "get", codes).then(res => {
+        this.$message.success("修改功能开关成功");
+        this.getMonthList();
+      });
     }
   }
 };

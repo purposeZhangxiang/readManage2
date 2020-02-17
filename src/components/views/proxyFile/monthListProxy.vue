@@ -151,7 +151,9 @@ export default {
   },
   methods: {
     getProxyMonthList() {
-      http("/manager/agentMonthCodeList", "post", {
+
+      // http("/manager/agentMonthCodeList", "post", {
+      http("/manager/queryActivationCode", "post", {
         page: this.currentPage,
         pageSize: this.pageSize,
         status: this.state,
@@ -178,14 +180,6 @@ export default {
       this.getProxyMonthList();
     },
     exportExcel() {
-      // http(
-      //   "/file/exportCode",
-      //   "get",
-      //   { state: this.state, rootType: this.rootState },
-      //   "blob"
-      // ).then(res => {
-      //   this.$message.success("导出成功");
-      // });
       /***
        * update 2020 2 16
        */
@@ -305,6 +299,7 @@ export default {
     excelHandelClose() {},
     exportSuc() {
       let obj = {
+        type: 1,
         status: this.state,
         rootType: this.rootState,
         code: this.code
