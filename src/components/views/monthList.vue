@@ -123,7 +123,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="monthVisible = false">取 消</el-button>
+        <el-button @click="gnkgDialog = false">取 消</el-button>
         <el-button type="primary" @click="gnkgDialogSuc">确 定</el-button>
       </span>
     </el-dialog>
@@ -317,9 +317,11 @@ export default {
       // }
       this.changeGnkgDialog();
     },
+    // 打开修改功能开关的dialog
     changeGnkgDialog() {
       this.gnkgDialog = !this.gnkgDialog;
     },
+    // 修改功能开关的dialog 确认事件
     gnkgDialogSuc() {
       let cloneGnkg = JSON.parse(JSON.stringify(this.gnkgForm.gnkg));
 
@@ -331,9 +333,14 @@ export default {
         ids: changeCodes.join(","),
         gnkg: globalFunc.binary(cloneGnkg)
       };
-      http("/manager/updateActivationCode", "get", codes).then(res => {
+      http("/manager/updateActivationCode", "post", codes).then(res => {
         this.$message.success("修改功能开关成功");
+
+        // 重置功能开关
+        this.selectGnkg  = [];
         this.getMonthList();
+
+        this.gnkgDialog = !this.gnkgDialog;
       });
     }
   }
