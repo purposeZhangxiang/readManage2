@@ -23,6 +23,8 @@
       <el-table-column prop="phone" label="联系方式" min-width="100" width="150"></el-table-column>
       <el-table-column prop="user" label="登陆账号" min-width="100" width="150"></el-table-column>
       <el-table-column prop="password" label="登陆密码" min-width="100" width="150"></el-table-column>
+      <el-table-column prop="packageName" label="软件包名" min-width="100" width="150"></el-table-column>
+      <!-- //packageName -->
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleDetail(scope.$index, scope.row)">查看详情</el-button>
@@ -94,6 +96,9 @@
             <el-form-item label="登陆账号" label-width="120px">
               <el-input v-model="proxyform3.user" autocomplete="off"></el-input>
             </el-form-item>
+            <el-form-item label="软件包名" label-width="120px">
+              <el-input v-model="proxyform3.packageName" autocomplete="off"></el-input>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="联系方式" label-width="120px">
@@ -158,7 +163,8 @@ export default {
         name: "",
         phone: "",
         user: "",
-        password: ""
+        password: "",
+        packageName:''
       },
       rules: {
         name: must,
@@ -177,6 +183,7 @@ export default {
       http("/manager/fetchAgentAdminList", "get", { page, pageSize }).then(
         res => {
           this.tableData = res.list;
+          debugger
           this.total = res.total;
         }
       );
